@@ -14,7 +14,6 @@ type StorageBatteryProductResponse = {
   name: string;
   model_number: string | null;
   description: string;
-  specifications: Record<string, unknown>;
   badge: string | null;
   images: string[];
   brand_name: string;

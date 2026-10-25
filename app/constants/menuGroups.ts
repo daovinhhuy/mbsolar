@@ -26,4 +26,6 @@ export const menuGroups = [
   },
   { label: "Về Chúng Tôi", href: "/#about" },
   { label: "Công Trình Đã Làm", href: "/#finished-construction" },
+  { label: "Giải pháp", href: "/#solutions" },
+  { label: "Đăng nhập", href: "/admin" },
 ];

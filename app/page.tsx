@@ -9,6 +9,8 @@ import AboutImageSlider from "../component/AboutImageSlider";
 import { getPartnerRouteKey, getPartners } from "@/services/partners";
 import { getHomepageProductCatalog } from "@/services/homepageProductCatalog";
 import { getFinishedConstructionProjects } from "@/services/finishedConstructionCatalog";
+import SolutionsSection from "./solutions/SolutionsSection";
+import { getSolutions } from "@/services/solutionsCatalog";
 
 export const metadata: Metadata = {
   title: "Năng lượng sạch cho tương lai | MB Solar",
@@ -18,6 +20,7 @@ export default async function Home() {
   const { newProducts, bestSellingProducts } =
     await getHomepageProductCatalog();
   const constructionProjects = await getFinishedConstructionProjects();
+  const solutions = await getSolutions();
   const partners = await getPartners();
 
   return (
@@ -55,6 +58,7 @@ export default async function Home() {
           </div>
         </section>
         <FinishedConstructionSection projects={constructionProjects} />
+        <SolutionsSection solutions={solutions} />
         <section className="products-section" id="products">
           <div className="container">
             <div className="eyebrow">Sản phẩm mới</div>

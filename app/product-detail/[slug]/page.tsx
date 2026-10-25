@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
@@ -7,6 +6,7 @@ import { getDatabaseConnection } from "@/app/api/connectionDB";
 import Footer from "@/component/Footer";
 import Header from "@/component/Header";
 import ProductImageGallery from "@/app/product-detail/ProductImageGallery";
+import ProductBackLink from "@/app/product-detail/ProductBackLink";
 import type { Product } from "@/data/products";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -93,14 +93,9 @@ export default async function ProductDetailPage({ params }: Props) {
       <Header />
       <main className="product-detail-page">
         <div className="container">
-          <nav className="product-breadcrumb" aria-label="Đường dẫn">
-            <Link href="/">Trang chủ</Link>
-            <span>/</span>
-            <Link href="/#products">Sản phẩm</Link>
-            <span>/</span>
-            <span aria-current="page">{product.name}</span>
-          </nav>
-
+          <div className="product-back-link">
+            <ProductBackLink />
+          </div>
           <section className="product-overview" aria-labelledby="product-title">
             <div className="product-detail-visual">
               <ProductImageGallery
@@ -151,16 +146,13 @@ export default async function ProductDetailPage({ params }: Props) {
                 className="product-detail-cta"
                 href="mailto:nangluongmbsolar@gmail.com?subject=T%C6%B0%20v%E1%BA%A5n%20s%E1%BA%A3n%20ph%E1%BA%A9m"
               >
-                Gửi yêu cầu tư vấn <span>→</span>
+                Gửi yêu cầu tư vấn qua email<span>→</span>
               </a>
               <small>
                 D7-44, Đường 15, KDC 586, phường Hưng Phú, TP. Cần Thơ
               </small>
             </div>
           </section>
-          <div className="product-back-link">
-            <Link href="/#products">← Quay lại danh sách sản phẩm</Link>
-          </div>
         </div>
       </main>
       <Footer />

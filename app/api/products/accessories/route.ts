@@ -8,7 +8,6 @@ type AccessoryProductRow = {
   name: string;
   model_number: string | null;
   description: string;
-  specifications: Record<string, unknown>;
   badge: string | null;
   images: string[];
   brand_name: string;
@@ -35,7 +34,6 @@ export async function GET() {
         p.name,
         p.model_number,
         p.description,
-        p.specifications,
         p.badge,
         COALESCE(
           (

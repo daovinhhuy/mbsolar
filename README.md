@@ -16,6 +16,18 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Admin
+
+Mở `/admin/login` để đăng nhập và quản lý sản phẩm, giải pháp, công trình đã làm. Máy chủ cần ba biến môi trường sau:
+
+```env
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="mật-khẩu-dài-tối-thiểu-16-ký-tự"
+ADMIN_SESSION_SECRET="chuỗi-ngẫu-nhiên-dài-tối-thiểu-32-ký-tự"
+```
+
+Đặt các giá trị trong `.env.local` khi chạy máy cá nhân và cấu hình riêng trong hosting khi triển khai. Không đưa mật khẩu hoặc khóa phiên vào Git.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

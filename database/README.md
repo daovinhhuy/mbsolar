@@ -4,7 +4,9 @@
 
 - `data/products.ts`, `data/inverterSolaX.ts`, `data/solarStorage.ts` và `data/solarAccessories.ts` chứa dữ liệu sản phẩm/catalog.
 - `partners` chứa thông tin hiển thị và nội dung giới thiệu của các đối tác. Danh sách sản phẩm trên trang đối tác được lọc theo thương hiệu trong `brands`.
-- `app/finished-construction/projects.ts` chứa công trình với tiêu đề, ảnh, giới thiệu và nội dung.
+- `app/finished-construction/projects.ts` chỉ khai báo kiểu dữ liệu; danh sách công trình được đọc từ `construction_projects` và ảnh từ `construction_project_images`.
+- `solutions` lưu tiêu đề, giới thiệu, nội dung, thứ tự và trạng thái hiển thị của từng giải pháp; `solution_images` liên kết ảnh từ bảng dùng chung `images`.
+- API `GET /api/solutions` trả về các giải pháp đã xuất bản. Trang chủ và trang chi tiết tải dữ liệu qua `services/solutionsCatalog.ts`.
 - Website hiện chưa hiển thị giá cụ thể và chưa có tồn kho, tài khoản, giỏ hàng, đơn hàng hay form tư vấn.
 
 ## Bảng
@@ -14,8 +16,7 @@
 - `partner_profiles`: hồ sơ nội dung gắn với `brands` theo schema hiện tại.
 - `categories`: danh mục cha/con và `filter_key` để lọc catalog.
 - `products`: sản phẩm thuộc một thương hiệu và một danh mục, có `slug`, tên, mã model tùy chọn, mô tả Markdown và nhãn tự do (`badge`, ví dụ “Hiệu suất cao”, “N-type”). `is_new` đánh dấu sản phẩm mới; `is_best_seller` đánh dấu sản phẩm bán chạy.
-- `products.specifications`: đối tượng JSONB cho thông số kỹ thuật đã chuẩn hóa. Dùng khóa theo ý nghĩa và lưu `{ "value": ..., "unit": ... }` để hỗ trợ kiểu dữ liệu và đơn vị khác nhau. Ví dụ inverter có `max_pv_voltage`/`mppt_count`; pin có `capacity_kwh`/`chemistry`. Sản phẩm chưa có thông số chuẩn hóa để `{}`.
-- `products.description`: nội dung mô tả Markdown để hiển thị nguyên văn theo đoạn/danh sách và giữ định dạng như chữ đậm. Khi nguồn cung cấp thông số dạng văn bản, có thể lưu nguyên nội dung tại đây trong lúc `specifications` chứa các giá trị chuẩn hóa đã xác minh.
+- `products.description`: nội dung mô tả Markdown để hiển thị nguyên văn theo đoạn/danh sách và giữ định dạng như chữ đậm.
 - `categories.filter_key`: khóa lọc catalog của danh mục con; không lặp lại khóa này trên mỗi sản phẩm.
 - `construction_projects`: tiêu đề, giới thiệu, nội dung dài dạng text và đường dẫn ảnh. Giao diện có thể tự chèn ảnh vào nội dung tại vị trí theo số ký tự mà không cần bảng nội dung con.
 - `quote_requests`: bảng dự phòng cho yêu cầu tư vấn khi website có form.
@@ -31,7 +32,18 @@ categories 1 ─── N categories (danh mục con)
 products 1 ─── N quote_requests (sản phẩm quan tâm là tùy chọn)
 ```
 
-Các danh sách trang chủ hiện được tính/ghép từ dữ liệu tĩnh. Không có bảng vị trí trang chủ trong schema; có thể lọc nhãn như “Bán chạy” qua `badge`. Phần chữ, menu và banner tĩnh khác có thể tiếp tục nằm trong code nếu chưa cần trang quản trị nội dung.
+Trang chủ đọc công trình đã làm từ `construction_projects` và giải pháp từ `solutions`; menu và banner tĩnh vẫn khai báo trong code. Schema chưa có bảng quản lý vị trí nội dung trang chủ.
+
+## Cập nhật database hiện có cho Giải pháp
+
+Chạy migration và nạp ba nội dung khởi đầu từ thư mục gốc dự án:
+
+```powershell
+psql -U postgres -d mb_solar -v ON_ERROR_STOP=1 -f database/migrate_solutions.sql
+psql -U postgres -d mb_solar -v ON_ERROR_STOP=1 -f database/seed_solutions.sql
+```
+
+Hai lệnh có thể chạy lại an toàn. Nội dung và ảnh được lưu trong PostgreSQL; có thể sửa hoặc thêm bản ghi trong bảng `solutions`, `solution_images` và `images`.
 
 ## Tạo database mới
 

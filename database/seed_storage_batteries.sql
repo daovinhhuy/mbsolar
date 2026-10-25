@@ -17,7 +17,7 @@ INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pi
 INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','sungrow-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
 INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Hithium điện áp thấp','hithium-battery-low-voltage','hithium-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Hithium.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
 INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Dyness điện áp thấp','dyness-battery-low-voltage','dyness-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Dyness.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-d53-ap-thap-triple-ld-53', 'SolaX T-BAT TSYS-D53 Áp thấp Triple LD 53', 'T-BAT TSYS-D53 Áp thấp Triple LD 53', 'Model: T-BAT TSYS-D53 Áp thấp Triple LD 53
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-d53-ap-thap-triple-ld-53', 'SolaX T-BAT TSYS-D53 Áp thấp Triple LD 53', 'T-BAT TSYS-D53 Áp thấp Triple LD 53', 'Model: T-BAT TSYS-D53 Áp thấp Triple LD 53
 Công suất: 5.3kW
 Kích thước 645 x 150 x 430
 Tiêu chuẩn chống nước, bụi: IP 65
@@ -28,8 +28,8 @@ BẢO HIỂM CHÁY NỔ PVI 10 NĂM
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SolaX
-BẢO HÀNH 10 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"rated_power":{"value":5.3,"unit":"kW"},"source_note":"SolaX\nBẢO HÀNH 10 NĂM"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-sys-lv-d150-pro', 'SolaX T-BAT-SYS-LV D150 Pro', 'T-BAT-SYS-LV D150 Pro', 'Model: T-BAT-SYS-LV D150 Pro
+BẢO HÀNH 10 NĂM', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-sys-lv-d150-pro', 'SolaX T-BAT-SYS-LV D150 Pro', 'T-BAT-SYS-LV D150 Pro', 'Model: T-BAT-SYS-LV D150 Pro
 Dung lượng: 15kWh
 Dạng treo tường/đặt dưới sàn
 Khả năng mở rộng đến 16 bộ Pin/dãy.
@@ -43,8 +43,8 @@ BẢO HIỂM CHÁY NỔ PVI 10 NĂM
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SolaX
-BẢO HÀNH 10 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"rated_power":{"value":15,"unit":"kW"},"capacity":{"value":15,"unit":"kWh"},"source_note":"SolaX\nBẢO HÀNH 10 NĂM"}'::JSONB, 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-ld160', 'SolaX T-BAT TSYS-LD160', 'T-BAT TSYS-LD160', 'Model: T-BAT TSYS-LD160
+BẢO HÀNH 10 NĂM', 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-ld160', 'SolaX T-BAT TSYS-LD160', 'T-BAT TSYS-LD160', 'Model: T-BAT TSYS-LD160
 Dung lượng:16kWh
 Dạng treo tường/đặt dưới sàn
 Khả năng mở rộng đến 16 bộ Pin/dãy.
@@ -58,8 +58,8 @@ BẢO HIỂM CHÁY NỔ PVI 10 NĂM
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SolaX
-BẢO HÀNH 10 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"rated_power":{"value":16,"unit":"kW"},"capacity":{"value":16,"unit":"kWh"},"source_note":"SolaX\nBẢO HÀNH 10 NĂM"}'::JSONB, 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-ld16-s', 'SolaX T-BAT TSYS-LD16-S', 'T-BAT TSYS-LD16-S', 'Model: T-BAT TSYS-LD16-S
+BẢO HÀNH 10 NĂM', 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-ld16-s', 'SolaX T-BAT TSYS-LD16-S', 'T-BAT TSYS-LD16-S', 'Model: T-BAT TSYS-LD16-S
 Dung lượng:16kWh
 Dạng treo tường/đặt dưới sàn
 Khả năng mở rộng đến 16 bộ Pin/dãy.
@@ -73,8 +73,8 @@ BẢO HIỂM CHÁY NỔ PVI 10 NĂM
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SolaX
-BẢO HÀNH 10 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"rated_power":{"value":16,"unit":"kW"},"capacity":{"value":16,"unit":"kWh"},"source_note":"SolaX\nBẢO HÀNH 10 NĂM"}'::JSONB, 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-ss-ac-trene-125kw-261kw', 'SolaX SS-AC-TRENE 125KW/261KW', 'SS-AC-TRENE 125KW/261KW', 'Model: SS-AC-TRENE 125KW/261KW
+BẢO HÀNH 10 NĂM', 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-ss-ac-trene-125kw-261kw', 'SolaX SS-AC-TRENE 125KW/261KW', 'SS-AC-TRENE 125KW/261KW', 'Model: SS-AC-TRENE 125KW/261KW
 – Công suất: 125kW
 – Hiệu suất: 98%
 – Điện 3 pha: 220/380V – 230/400V
@@ -85,8 +85,8 @@ INSERT INTO products (brand_id, category_id, slug, name, model_number, descripti
 – chạy ngoài trời
 – Quá tải: 120% (1 phút)
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","rated_power":{"value":125,"unit":"kW"},"source_note":"SolaX"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-trene-p125b261l-ac-couple-261kwh', 'SolaX TRENE-P125B261L AC Couple Cabinet 261kWh', 'TRENE-P125B261L', 'TRENE-P125B261L AC couple Cabinet Storage system C&I,
+Ghi chú: SolaX', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-trene-p125b261l-ac-couple-261kwh', 'SolaX TRENE-P125B261L AC Couple Cabinet 261kWh', 'TRENE-P125B261L', 'TRENE-P125B261L AC couple Cabinet Storage system C&I,
 -125kw PCS+261kwh Battery 314Ah
 -EMS Included 
 -Chống cháy 4 cấp độ
@@ -95,36 +95,36 @@ INSERT INTO products (brand_id, category_id, slug, name, model_number, descripti
 
 Bảo hành tiêu chuẩn: Bảo hành: 5 năm sản phẩm, 10 năm hiệu suất pin (≥70% dung lượng)
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành: 5 năm sản phẩm, 10 năm hiệu suất pin (≥70% dung lượng)","warranty_years":5,"rated_power":{"value":125,"unit":"kW"},"capacity":{"value":261,"unit":"kWh"},"battery_chemistry":"LFP","cooling":"Liquid cooling","source_note":"SolaX"}'::JSONB, 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p50b100-100kwh', 'SolaX AELIO P50B100 50kW + 100kWh', 'AELIO P50B100', 'AELIO P50B100 50KW
+Ghi chú: SolaX', 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p50b100-100kwh', 'SolaX AELIO P50B100 50kW + 100kWh', 'AELIO P50B100', 'AELIO P50B100 50KW
 -HYBRID INVERTER AELIO 50KW + 100KWH 
 -LFP BATTERY 280A 
 *EMS Included chống cháy 4 cấp độ 
 -Tiêu chuẩn ngoài trời
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","rated_power":{"value":50,"unit":"kW"},"capacity":{"value":100,"unit":"kWh"},"battery_chemistry":"LFP","source_note":"SolaX"}'::JSONB, 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p50b100-200kwh', 'SolaX AELIO P50B100 50kW + 200kWh', 'AELIO P50B100', 'AELIO P50B100 50KW
+Ghi chú: SolaX', 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p50b100-200kwh', 'SolaX AELIO P50B100 50kW + 200kWh', 'AELIO P50B100', 'AELIO P50B100 50KW
 -HYBRID INVERTER AELIO 50KW + 200KWH 
 -LFP BATTERY 280A 
 *EMS Included chống cháy 4 cấp độ 
 -Tiêu chuẩn ngoài trời
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","rated_power":{"value":50,"unit":"kW"},"capacity":{"value":200,"unit":"kWh"},"battery_chemistry":"LFP","source_note":"SolaX"}'::JSONB, 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p60b200-100kwh', 'SolaX AELIO P60B200 60kW + 100kWh', 'AELIO P60B200', 'AELIO P60B200 60KW
+Ghi chú: SolaX', 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p60b200-100kwh', 'SolaX AELIO P60B200 60kW + 100kWh', 'AELIO P60B200', 'AELIO P60B200 60KW
 -HYBRID INVERTER AELIO 60KW + 100KWH 
 -LFP BATTERY 280A 
 *EMS Included chống cháy 4 cấp độ 
 -Tiêu chuẩn ngoài trời
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","rated_power":{"value":60,"unit":"kW"},"capacity":{"value":100,"unit":"kWh"},"battery_chemistry":"LFP","source_note":"SolaX"}'::JSONB, 4) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p60b200-200kwh', 'SolaX AELIO P60B200 60kW + 200kWh', 'AELIO P60B200', 'AELIO P60B200 60KW
+Ghi chú: SolaX', 4) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-ci-industrial-storage'), 'solax-aelio-p60b200-200kwh', 'SolaX AELIO P60B200 60kW + 200kWh', 'AELIO P60B200', 'AELIO P60B200 60KW
 -HYBRID INVERTER AELIO 60KW + 200KWH 
 -LFP BATTERY 280A 
 *EMS Included chống cháy 4 cấp độ 
 -Tiêu chuẩn ngoài trời
 
-Ghi chú: SolaX', '{"sales_unit":"Bộ","rated_power":{"value":60,"unit":"kW"},"capacity":{"value":200,"unit":"kWh"},"battery_chemistry":"LFP","source_note":"SolaX"}'::JSONB, 5) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Solis') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solis-battery-low-voltage'), 'solis-intellihome-16kwh-od', 'Pin lưu trữ Solis 16kWh IntelliHome-16kWh-OD', 'IntelliHome-16kWh-OD', 'Pin lưu trữ Solis 16kWh IntelliHome-16kWh-OD
+Ghi chú: SolaX', 5) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Solis') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solis-battery-low-voltage'), 'solis-intellihome-16kwh-od', 'Pin lưu trữ Solis 16kWh IntelliHome-16kWh-OD', 'IntelliHome-16kWh-OD', 'Pin lưu trữ Solis 16kWh IntelliHome-16kWh-OD
 -Model: IntelliHome-16kWh-OD
 -DOD 100%
 -Dung lượng: 16kWh
@@ -141,8 +141,8 @@ INSERT INTO products (brand_id, category_id, slug, name, model_number, descripti
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SOLIS
-BẢO HÀNH 10 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"capacity":{"value":16,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"capacity_ah":{"value":314,"unit":"Ah"},"dod_percent":100,"charge_discharge_current":{"value":157,"unit":"A"},"cycle_life":">6000","source_note":"SOLIS\nBẢO HÀNH 10 NĂM"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Hithium') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='hithium-battery-low-voltage'), 'hithium-hero-ee-maxpower-16', 'Hithium Hero EE MaxPower 16', NULL, 'Pin Lưu Trữ Hithium Hero EE MaxPower 16
+BẢO HÀNH 10 NĂM', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Hithium') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='hithium-battery-low-voltage'), 'hithium-hero-ee-maxpower-16', 'Hithium Hero EE MaxPower 16', NULL, 'Pin Lưu Trữ Hithium Hero EE MaxPower 16
 - Dung lượng: 16,08kWh
 - Công nghệ Pin: Lithium Iron Phosphate
 - Điện áp danh định: 51.2 VDC
@@ -160,8 +160,8 @@ Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: HITHIUM
 BẢO HÀNH 10 NĂM 
-1 ĐỔI 1', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"capacity":{"value":16.08,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"dod_percent":100,"max_charge_discharge_current":{"value":200,"unit":"A"},"cycle_life":11000,"battery_chemistry":"Lithium Iron Phosphate","source_note":"HITHIUM\nBẢO HÀNH 10 NĂM \n1 ĐỔI 1"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Hithium') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='hithium-battery-low-voltage'), 'hithium-hero-ee-maxpower-30', 'Hithium Hero EE MaxPower 30', NULL, 'Pin Lưu Trữ Hithium Hero EE MaxPower 30 
+1 ĐỔI 1', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Hithium') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='hithium-battery-low-voltage'), 'hithium-hero-ee-maxpower-30', 'Hithium Hero EE MaxPower 30', NULL, 'Pin Lưu Trữ Hithium Hero EE MaxPower 30 
 (Công nghệ cell pin mới 587Ah)
 Dung lượng danh định: 30.05 kWh 
 - Công nghệ pin: Lithium Iron Phosphate (LiFePO₄ – LFP) 
@@ -182,8 +182,8 @@ Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: HITHIUM
 BẢO HÀNH 10 NĂM 
-1 ĐỔI 1', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"capacity":{"value":30.05,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"voltage_range":"43.2–58.4 VDC","dod_percent":100,"recommended_charge_discharge_current":{"value":260,"unit":"A"},"max_charge_discharge_current":{"value":300,"unit":"A"},"cycle_life":11000,"battery_chemistry":"Lithium Iron Phosphate (LiFePO₄ – LFP)","source_note":"HITHIUM\nBẢO HÀNH 10 NĂM \n1 ĐỔI 1"}'::JSONB, 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-dl5-0f', 'Dyness DL5.0F', 'DL5.0F', 'Thương hiệu: Dyness
+1 ĐỔI 1', 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-dl5-0f', 'Dyness DL5.0F', 'DL5.0F', 'Thương hiệu: Dyness
 Model No: DL5.0F
 -Dung lượng: 5kwh, DOD 90%,Điện áp: 51.2V
 -Dòng xạc/ xả liên tục (max): 50A (75A)
@@ -197,8 +197,8 @@ Model No: DL5.0F
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 07 năm
 
 Ghi chú: DYNESS
-BẢO HÀNH 07 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 07 năm","warranty_years":7,"capacity":{"value":5,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"dod_percent":90,"continuous_current":{"value":50,"unit":"A"},"max_current":{"value":75,"unit":"A"},"cycle_life":">=8000","protection":"IP20","source_note":"DYNESS\nBẢO HÀNH 07 NĂM"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-power-brick-sc', 'Dyness Power Brick SC', 'Power Brick SC', 'Thương hiệu: Dyness
+BẢO HÀNH 07 NĂM', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-power-brick-sc', 'Dyness Power Brick SC', 'Power Brick SC', 'Thương hiệu: Dyness
 Model No: Power Brick SC 
 -Dung lượng: 16 kWh - DOD 95% 
 -Điện áp: 51.2V - 314 Ah 
@@ -213,8 +213,8 @@ Model No: Power Brick SC
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 07 năm
 
 Ghi chú: DYNESS
-BẢO HÀNH 07 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 07 năm","warranty_years":7,"capacity":{"value":16,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"capacity_ah":314,"dod_percent":95,"continuous_current":{"value":140,"unit":"A"},"max_current":{"value":200,"unit":"A"},"cycle_life":">=8000","protection":"IP20","source_note":"DYNESS\nBẢO HÀNH 07 NĂM"}'::JSONB, 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-power-brick-plus', 'Dyness Power Brick PLUS', 'Power Brick PLUS', 'Thương hiệu: Dyness
+BẢO HÀNH 07 NĂM', 1) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-power-brick-plus', 'Dyness Power Brick PLUS', 'Power Brick PLUS', 'Thương hiệu: Dyness
 Model No: Power Brick PLUS 
 -Dung lượng: 16 kWh - DOD 95% 
 -Điện áp: 51.2V - 314 Ah 
@@ -229,8 +229,8 @@ Model No: Power Brick PLUS
 Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 07 năm
 
 Ghi chú: DYNESS
-BẢO HÀNH 07 NĂM', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 07 năm","warranty_years":7,"capacity":{"value":16,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"capacity_ah":314,"dod_percent":95,"continuous_current":{"value":140,"unit":"A"},"max_current":{"value":200,"unit":"A"},"cycle_life":">=8000","protection":"IP65","source_note":"DYNESS\nBẢO HÀNH 07 NĂM"}'::JSONB, 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-battery-module-14-3kwh', 'Dyness Battery Module 14.3kWh', NULL, 'Thương hiệu: Dyness (Lắp tối thiểu 6 pack) 
+BẢO HÀNH 07 NĂM', 2) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Dyness') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='dyness-battery-low-voltage'), 'dyness-battery-module-14-3kwh', 'Dyness Battery Module 14.3kWh', NULL, 'Thương hiệu: Dyness (Lắp tối thiểu 6 pack) 
 -1module/14.3Kwh/51.2V 280Ah/ ≥8000 Cycles/1C/ 
 -Bảo hành 10 năm (theo tiêu chuẩn nhà sản xuất)
 
@@ -238,8 +238,8 @@ Bảo hành tiêu chuẩn: Bảo Hành 10 Năm Theo Tiêu Chuẩn Nhà Sản Xu�
 
 Ghi chú: DYNESS
 BẢO HÀNH 10 NĂM
-THEO TIÊU CHUẨN NHÀ SẢN XUẤT', '{"sales_unit":"Bộ","warranty_standard":"Bảo Hành 10 Năm Theo Tiêu Chuẩn Nhà Sản Xuất","warranty_years":10,"capacity":{"value":14.3,"unit":"kWh"},"nominal_voltage":{"value":51.2,"unit":"V"},"capacity_ah":280,"cycle_life":">=8000","installation_note":"Lắp tối thiểu 6 pack","source_note":"DYNESS\nBẢO HÀNH 10 NĂM\nTHEO TIÊU CHUẨN NHÀ SẢN XUẤT"}'::JSONB, 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
-INSERT INTO products (brand_id, category_id, slug, name, model_number, description, specifications, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Sungrow') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='sungrow-battery-low-voltage'), 'sungrow-mbl160', 'Pin Lưu Trữ Sungrow MBL160', 'Tower T7', 'Pin Lưu Trữ Sungrow MBL160
+THEO TIÊU CHUẨN NHÀ SẢN XUẤT', 3) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('Sungrow') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='sungrow-battery-low-voltage'), 'sungrow-mbl160', 'Pin Lưu Trữ Sungrow MBL160', 'Tower T7', 'Pin Lưu Trữ Sungrow MBL160
 Model No: Tower T7
 Điện áp: 192V
 Công suất xả liên tục: 4,26kwh
@@ -251,5 +251,5 @@ Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 
 Ghi chú: SUNGROW
 BẢO HÀNH 10 NĂM 
-1 ĐỔI 1', '{"sales_unit":"Bộ","warranty_standard":"Bảo hành tiêu chuẩn 10 năm","warranty_years":10,"rated_power":{"value":16,"unit":"kW"},"nominal_voltage":{"value":192,"unit":"V"},"continuous_discharge_source_value":"4,26kwh","communication":"CAN2.0/RS485/Wifi/LAN","protection":"IP54","cycle_life":">6000","battery_chemistry":"LFP","source_note":"SUNGROW\nBẢO HÀNH 10 NĂM \n1 ĐỔI 1"}'::JSONB, 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, specifications=EXCLUDED.specifications, sort_order=EXCLUDED.sort_order;
+1 ĐỔI 1', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
 COMMIT;

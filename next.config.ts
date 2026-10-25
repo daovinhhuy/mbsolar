@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   devIndicators: false,
   allowedDevOrigins: ["192.168.1.30", "*.trycloudflare.com"],
   images: {
@@ -8,6 +9,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
         pathname: "/**",
       },
     ],

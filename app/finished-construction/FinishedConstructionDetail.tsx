@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { FinishedConstructionProject } from "./projects";
 
 type FinishedConstructionDetailProps = {
@@ -11,9 +10,9 @@ export default function FinishedConstructionDetail({
 }: FinishedConstructionDetailProps) {
   return (
     <article className="construction-detail container">
-      <Link className="construction-detail-back" href="/#finished-construction">
+      <a className="construction-detail-back" href="/#finished-construction">
         ← Xem các công trình khác
-      </Link>
+      </a>
 
       <header className="construction-detail-header">
         <div className="eyebrow">Công trình tiêu biểu</div>

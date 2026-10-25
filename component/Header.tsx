@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { menuGroups } from "@/app/constants/menuGroups";
-import logoMb from "@/public/image/logoMB.png";
+import logoMb from "@/public/image/logoMB-header.png";
 
 function itemHref(item: string) {
   if (item === "Pin lưu trữ Hithium")
@@ -50,6 +50,14 @@ function groupHref(label: string) {
   return "#products";
 }
 
+const topbarMessages = [
+  "Giải pháp năng lượng xanh cho tương lai",
+  "3+ Năm kinh nghiệm",
+  "Công suất đã lắp đặt: 2.5 MW",
+  "98% Khách hàng hài lòng",
+  "📞 Hotline: 094 504 68 07",
+];
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -57,23 +65,38 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="topbar">
-        <div className="container topbar-inner text-sm">
-          <span>Giải pháp năng lượng xanh cho tương lai</span>
-          <span>3+ Năm kinh nghiệm</span>
-          <span>Công suất đã lắp đặt: 2.5 MW</span>
-          <span>98% Khách hàng hài lòng</span>
-          <span className="text-base">	📞Hotline: 094 504 68 07</span>
+        <div
+          className="container topbar-inner text-sm"
+          role="region"
+          aria-label="Thông tin MB Solar"
+        >
+          <div className="topbar-track">
+            {[0, 1, 2].map((copy) => (
+              <div
+                className="topbar-group"
+                aria-hidden={copy > 0}
+                key={copy}
+              >
+                {topbarMessages.map((message, index) => (
+                  <span
+                    className={index === topbarMessages.length - 1 ? "text-base" : undefined}
+                    key={message}
+                  >
+                    {message}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div className="container nav-wrap">
         <Link className="logo" href="/">
           <Image src={logoMb} alt="MB Solar" priority />
         </Link>
-        <div className="mobile-marquee">
-          <div className="mobile-marquee__track">
-            <span>Giải pháp năng lượng xanh • Tư vấn &amp; thi công điện mặt trời • Hotline 094 504 68 07</span>
-            <span aria-hidden="true">Giải pháp năng lượng xanh • Tư vấn &amp; thi công điện mặt trời • Hotline 094 504 68 07</span>
-          </div>
+        <div className="mobile-tagline">
+          <span>Năng lượng mặt trời MB Solar</span>
+          <span>Vì một hành tinh xanh</span>
         </div>
         <input
           className="menu-checkbox"
@@ -113,7 +136,7 @@ export default function Header() {
               </div>
             ) : (
               <a
-                className={`nav-link ${active ? "active" : ""}`}
+                className={`nav-link ${active ? "active" : ""} ${group.label === "Đăng nhập" ? "nav-login-link" : ""}`}
                 href={href ?? "#products"}
                 key={group.label}
               >
