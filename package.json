@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
+    "postbuild": "node scripts/copy-standalone-assets.cjs",
     "start": "node .next/standalone/server.js",
     "lint": "eslint"
   },
