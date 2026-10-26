@@ -11,6 +11,7 @@ import { getHomepageProductCatalog } from "@/services/homepageProductCatalog";
 import { getFinishedConstructionProjects } from "@/services/finishedConstructionCatalog";
 import SolutionsSection from "./solutions/SolutionsSection";
 import { getSolutions } from "@/services/solutionsCatalog";
+import type { PartnerRow } from "@/types/partner";
 
 export const metadata: Metadata = {
   title: "Năng lượng sạch cho tương lai | MB Solar",
@@ -21,7 +22,10 @@ export default async function Home() {
     await getHomepageProductCatalog();
   const constructionProjects = await getFinishedConstructionProjects();
   const solutions = await getSolutions();
-  const partners = await getPartners();
+  const partners = await getPartners().catch((error): PartnerRow[] => {
+    console.error("Failed to load homepage partners:", error);
+    return [];
+  });
 
   return (
     <>

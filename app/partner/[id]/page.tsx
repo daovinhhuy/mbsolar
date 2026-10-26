@@ -3,11 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getDatabaseConnection } from "@/app/api/connectionDB";
 import PartnerPage from "@/component/PartnerPage";
 import type { Product } from "@/data/products";
-import {
-  getPartnerById,
-  getPartnerRouteKey,
-  getPartners,
-} from "@/services/partners";
+import { getPartnerById, getPartnerRouteKey } from "@/services/partners";
 
 type PartnerRouteProps = {
   params: Promise<{ id: string }>;
@@ -78,11 +74,6 @@ async function getPartnerProducts(brandName: string): Promise<Product[]> {
     console.error("Failed to load partner products from database:", error);
     return [];
   }
-}
-
-export async function generateStaticParams() {
-  const partners = await getPartners();
-  return partners.map((partner) => ({ id: getPartnerRouteKey(partner) }));
 }
 
 export async function generateMetadata({ params }: PartnerRouteProps): Promise<Metadata> {

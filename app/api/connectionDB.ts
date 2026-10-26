@@ -5,10 +5,10 @@ const globalForPostgres = globalThis as typeof globalThis & {
 };
 
 export function getDatabaseConnection() {
-  const connectionString = "postgresql://postgres:postgres@localhost:5432/mb_solar";
+  const connectionString = process.env.DATABASE_URL?.trim();
 
   if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
+    throw new Error("DATABASE_URL must be set to connect to PostgreSQL");
   }
 
   globalForPostgres.solaxProductsPool ??= new Pool({ connectionString });
