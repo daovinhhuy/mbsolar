@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import { Client } from 'pg';
 import { schemaSql } from './schema';
 import { seedPartnerIds, seedPartnersSql } from './seed-partners';
+import { catalogImageLinks, catalogProductSlugs, catalogSeedSql, catalogSolutionTitles } from './seed-catalog';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -97,7 +98,7 @@ async function withDatabase(request: Request, action: (client: Client) => Promis
       '28P01': 'Database authentication failed. Check the runtime DATABASE_URL credentials.',
       '3D000': 'The database named by DATABASE_URL does not exist. Use the existing database name supplied by Vibe.',
       '42501': 'The database user lacks permission to create the required objects in public.',
-      '23505': 'Partner name, ID, or sort_order conflicts with an existing row. This attempt was rolled back; existing data was not deleted.',
+      '23505': 'A unique key or primary-image assignment conflicts with existing data. This attempt was rolled back; existing data was not deleted.',
       '57014': 'A database statement timed out. This attempt was rolled back.',
     };
     console.error('[db-setup] Failed with code:', code);
@@ -112,12 +113,17 @@ async function withDatabase(request: Request, action: (client: Client) => Promis
 
 // Read-only: identify the actual database and list its public tables.
 export async function GET(request: Request) {
-  return withDatabase(request, async (client) => json({ ok: true, ...await inspect(client) }));
+  return withDatabase(request, async (client) => json({ ok: true, catalog_seed_available: true, ...await inspect(client) }));
 }
 
-// Runs only the reviewed schema and fixed partner seed; no SQL is accepted from requests.
+// Runs only fixed reviewed seeds; no SQL is accepted from requests.
+// Existing callers keep the partner-only behavior. Catalog import is explicit.
 export async function POST(request: Request) {
   return withDatabase(request, async (client) => {
+    const seed = new URL(request.url).searchParams.get('seed') ?? 'partners';
+    if (seed !== 'partners' && seed !== 'catalog') {
+      return json({ error: 'INVALID_SEED', message: 'Supported seed modes: partners, catalog.' }, 400);
+    }
     await client.query('BEGIN');
     try {
       const lock = await client.query<{ acquired: boolean }>(
@@ -129,6 +135,9 @@ export async function POST(request: Request) {
       const before = await inspect(client);
       await client.query("SET LOCAL lock_timeout = '5s'");
       let createdTables = 0;
+      if (seed === 'catalog' && before.missing_expected_tables.length !== 0) {
+        throw new SetupError(409, 'SCHEMA_INCOMPLETE', 'Run the initial database setup first. Catalog import requires the existing application tables.');
+      }
       if (before.table_count === 0) {
         const namespace = await client.query("SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = 'public'");
         if (namespace.rowCount === 0) await client.query('CREATE SCHEMA public');
@@ -138,6 +147,40 @@ export async function POST(request: Request) {
         throw new SetupError(409, 'SCHEMA_INCOMPLETE', 'The public schema contains tables but is missing expected application tables. No schema or seed changes were made.');
       }
       await client.query('SET LOCAL search_path TO public');
+      if (seed === 'catalog') {
+        await client.query(catalogSeedSql);
+        const verified = await client.query<{ products: number; solutions: number; image_links: number }>(
+          `SELECT
+            (SELECT count(*)::int FROM public.products WHERE slug = ANY($1::text[])) AS products,
+            (SELECT count(DISTINCT title)::int FROM public.solutions WHERE title = ANY($2::text[])) AS solutions,
+            (SELECT count(*)::int FROM jsonb_to_recordset($3::jsonb) AS expected(path text, slug text)
+              JOIN public.products p ON p.slug = expected.slug
+              JOIN public.images i ON i.path = expected.path
+              JOIN public.product_images pi ON pi.product_id = p.id AND pi.image_id = i.id) AS image_links`,
+          [catalogProductSlugs, catalogSolutionTitles, JSON.stringify(catalogImageLinks)],
+        );
+        const applied = verified.rows[0];
+        if (applied.products !== catalogProductSlugs.length || applied.solutions !== catalogSolutionTitles.length || applied.image_links !== catalogImageLinks.length) {
+          throw new SetupError(500, 'SEED_VERIFICATION_FAILED', 'Catalog verification failed. This attempt was rolled back.');
+        }
+        const totals = await client.query<Record<string, number>>(`SELECT
+          (SELECT count(*)::int FROM public.brands) AS brands,
+          (SELECT count(*)::int FROM public.categories) AS categories,
+          (SELECT count(*)::int FROM public.products) AS products,
+          (SELECT count(*)::int FROM public.images) AS images,
+          (SELECT count(*)::int FROM public.product_images) AS product_images,
+          (SELECT count(*)::int FROM public.solutions) AS solutions,
+          (SELECT count(*)::int FROM public.solution_images) AS solution_images,
+          (SELECT count(*)::int FROM public.partners) AS partners,
+          (SELECT count(*)::int FROM public.partner_profiles) AS partner_profiles,
+          (SELECT count(*)::int FROM public.construction_projects) AS construction_projects,
+          (SELECT count(*)::int FROM public.construction_project_images) AS construction_project_images,
+          (SELECT count(*)::int FROM public.products p WHERE NOT EXISTS
+            (SELECT 1 FROM public.product_images pi WHERE pi.product_id = p.id)) AS products_without_images`);
+        const after = await inspect(client);
+        await client.query('COMMIT');
+        return json({ ok: true, mode: 'seed-catalog-only', catalog_records_verified: applied, totals: totals.rows[0], ...after });
+      }
       await client.query(seedPartnersSql);
       const verifiedSeed = await client.query<{ count: number }>(
         'SELECT count(*)::int AS count FROM public.partners WHERE id = ANY($1::integer[])',
