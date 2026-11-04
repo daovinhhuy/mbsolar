@@ -1,34 +1,21 @@
-import Link from "next/link";
-import Image from "next/image";
-import logoMb from "@/public/image/logoMB.png";
-
 export default function Footer() {
   return (
     <footer className="footer" id="contact">
       <div className="container footer-grid">
-        <div>
-          <Link className="logo" href="/">
-            <Image src={logoMb} alt="MB Solar" priority />
-          </Link>
-          <p className="footer-intro">
-            CÔNG TY TNHH XÂY LẮP ĐIỆN CÔNG NGHIỆP NĂNG LƯỢNG MẶT TRỜI MB SOLAR
-          </p>
-          
-        </div>
         <div className="footer-contact-info">
           <h4>THÔNG TIN LIÊN HỆ</h4>
           <p className="contact-line">
-            <strong>📍Địa chỉ:</strong> D7-44, Đường 15, KDC 586, phường Hưng
+            <strong>Địa chỉ:</strong> D7-44, Đường 15, KDC 586, phường Hưng
             Phú, TP. Cần Thơ
           </p>
           <p className="contact-line">
-            <strong>🧾 Mã số thuế:</strong> 1801779076
+            <strong>Mã số thuế:</strong> 1801779076
           </p>
           <p className="contact-line">
-            <strong>☎ Điện thoại/Zalo:</strong> 094 504 68 07
+            <strong>Điện thoại/Zalo:</strong> 094 504 68 07
           </p>
           <span className="footer-email-line">
-            <strong>✉ Email:</strong>{" "}
+            <strong>Email:</strong>{" "}
             <a href="mailto:nangluongmbsolar@gmail.com">
               nangluongmbsolar@gmail.com
             </a>

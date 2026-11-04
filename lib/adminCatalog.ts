@@ -24,6 +24,8 @@ export type CategoryDraft = {
   isActive: boolean;
 };
 
+const SOLAR_PANEL_SLUG_PATTERN = /^tam-pin-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 export class AdminCatalogConflictError extends Error {}
 
 export function isAdminCatalogResource(value: string): value is AdminCatalogResource {
@@ -110,6 +112,23 @@ export async function listAdminCatalog(pool: Pool, resource: AdminCatalogResourc
 
   const [categories, parents] = await Promise.all([
     pool.query(`
+      WITH RECURSIVE category_ancestry AS (
+        SELECT
+          id,
+          parent_id,
+          slug,
+          slug ILIKE 'tam-pin-%' AS is_solar_panel
+        FROM categories
+        WHERE parent_id IS NULL
+        UNION ALL
+        SELECT
+          child.id,
+          child.parent_id,
+          child.slug,
+          parent.is_solar_panel OR child.slug ILIKE 'tam-pin-%'
+        FROM categories AS child
+        JOIN category_ancestry AS parent ON parent.id = child.parent_id
+      )
       SELECT
         category.id::TEXT AS id,
         category.name,
@@ -120,16 +139,40 @@ export async function listAdminCatalog(pool: Pool, resource: AdminCatalogResourc
         category.description,
         category.sort_order AS "sortOrder",
         category.is_active AS "isActive",
+        COALESCE(category_ancestry.is_solar_panel, FALSE) AS "isSolarPanel",
         (SELECT COUNT(*)::INTEGER FROM products WHERE category_id = category.id) AS "productCount",
         (SELECT COUNT(*)::INTEGER FROM categories AS child WHERE child.parent_id = category.id) AS "childCount"
       FROM categories AS category
       LEFT JOIN categories AS parent ON parent.id = category.parent_id
+      LEFT JOIN category_ancestry ON category_ancestry.id = category.id
       ORDER BY parent.sort_order NULLS FIRST, parent.name, category.sort_order, category.name, category.id;
     `),
     pool.query(`
-      SELECT id::TEXT AS id, name, parent_id::TEXT AS "parentId"
-      FROM categories
-      ORDER BY sort_order, name, id;
+      WITH RECURSIVE category_ancestry AS (
+        SELECT
+          id,
+          parent_id,
+          slug,
+          slug ILIKE 'tam-pin-%' AS is_solar_panel
+        FROM categories
+        WHERE parent_id IS NULL
+        UNION ALL
+        SELECT
+          child.id,
+          child.parent_id,
+          child.slug,
+          parent.is_solar_panel OR child.slug ILIKE 'tam-pin-%'
+        FROM categories AS child
+        JOIN category_ancestry AS parent ON parent.id = child.parent_id
+      )
+      SELECT
+        category.id::TEXT AS id,
+        category.name,
+        category.parent_id::TEXT AS "parentId",
+        COALESCE(category_ancestry.is_solar_panel, FALSE) AS "isSolarPanel"
+      FROM categories AS category
+      LEFT JOIN category_ancestry ON category_ancestry.id = category.id
+      ORDER BY category.sort_order, category.name, category.id;
     `),
   ]);
 
@@ -155,14 +198,34 @@ export async function saveAdminCategory(
   draft: CategoryDraft,
   id?: string,
 ) {
+  if (!id && !draft.parentId) {
+    throw new AdminValidationError("Vui lòng chọn danh mục cha trước khi tạo danh mục.");
+  }
+
+  let belongsToSolarPanelCatalog =
+    draft.slug === "tam-pin" || draft.slug.startsWith("tam-pin-");
+
   if (draft.parentId) {
-    const parent = await pool.query<{ exists: boolean }>(
-      `SELECT EXISTS (SELECT 1 FROM categories WHERE id = $1) AS exists;`,
+    const parent = await pool.query<{ exists: boolean; isSolarPanel: boolean }>(
+      `
+        WITH RECURSIVE category_ancestors AS (
+          SELECT id, parent_id, slug FROM categories WHERE id = $1
+          UNION
+          SELECT parent.id, parent.parent_id, parent.slug
+          FROM categories AS parent
+          JOIN category_ancestors AS child ON child.parent_id = parent.id
+        )
+        SELECT
+          EXISTS (SELECT 1 FROM categories WHERE id = $1) AS exists,
+          EXISTS (SELECT 1 FROM category_ancestors WHERE slug ILIKE 'tam-pin-%') AS "isSolarPanel";
+      `,
       [draft.parentId],
     );
-    if (!parent.rows[0]?.exists) {
+    const parentRow = parent.rows[0];
+    if (!parentRow?.exists) {
       throw new AdminValidationError("Danh mục cha không tồn tại.");
     }
+    belongsToSolarPanelCatalog ||= parentRow.isSolarPanel;
 
     if (id) {
       const cycle = await pool.query<{ invalid: boolean }>(
@@ -182,6 +245,16 @@ export async function saveAdminCategory(
         throw new AdminValidationError("Danh mục không thể là danh mục cha của chính nó.");
       }
     }
+  }
+
+  if (id && await hasSolarPanelAncestor(pool, id)) {
+    belongsToSolarPanelCatalog = true;
+  }
+
+  if (belongsToSolarPanelCatalog && !SOLAR_PANEL_SLUG_PATTERN.test(draft.slug)) {
+    throw new AdminValidationError(
+      "Slug danh mục tấm pin phải có dạng tam-pin-ten-danh-muc.",
+    );
   }
 
   const values = [
@@ -215,6 +288,25 @@ export async function saveAdminCategory(
       );
 
   return result.rows[0]?.id ?? null;
+}
+
+async function hasSolarPanelAncestor(pool: Pool, categoryId: string) {
+  const result = await pool.query<{ isSolarPanel: boolean }>(
+    `
+      WITH RECURSIVE category_ancestors AS (
+        SELECT id, parent_id, slug FROM categories WHERE id = $1
+        UNION
+        SELECT parent.id, parent.parent_id, parent.slug
+        FROM categories AS parent
+        JOIN category_ancestors AS child ON child.parent_id = parent.id
+      )
+      SELECT EXISTS (
+        SELECT 1 FROM category_ancestors WHERE slug ILIKE 'tam-pin-%'
+      ) AS "isSolarPanel";
+    `,
+    [categoryId],
+  );
+  return result.rows[0]?.isSolarPanel ?? false;
 }
 
 export async function deleteAdminCatalogItem(

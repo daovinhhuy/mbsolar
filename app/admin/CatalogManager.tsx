@@ -19,11 +19,17 @@ type CategoryItem = {
   description: string | null;
   sortOrder: number;
   isActive: boolean;
+  isSolarPanel: boolean;
   productCount: number;
   childCount: number;
 };
 
-type CategoryParent = { id: string; name: string; parentId: string | null };
+type CategoryParent = {
+  id: string;
+  name: string;
+  parentId: string | null;
+  isSolarPanel: boolean;
+};
 type CatalogResource = "brands" | "categories";
 type CatalogItem = BrandItem | CategoryItem;
 type CatalogDraft = {
@@ -68,6 +74,10 @@ function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function isValidSolarPanelSlug(value: string) {
+  return /^tam-pin-[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(value.trim());
 }
 
 function getDescendantIds(categories: CategoryParent[], id: string) {
@@ -142,6 +152,16 @@ export default function CatalogManager({
 
   const brands = resource === "brands" ? (items as BrandItem[]) : [];
   const categories = resource === "categories" ? (items as CategoryItem[]) : [];
+  const selectedParent = parents.find((parent) => parent.id === draft.parentId);
+  const editingCategory = categories.find((category) => category.id === editingId);
+  const slugLooksLikeSolarPanel =
+    draft.slug.toLowerCase() === "tam-pin"
+    || draft.slug.toLowerCase().startsWith("tam-pin-");
+  const requiresSolarPanelSlug = Boolean(
+    selectedParent?.isSolarPanel
+      || editingCategory?.isSolarPanel
+      || slugLooksLikeSolarPanel,
+  );
 
   function resetForm() {
     setEditingId(null);
@@ -177,6 +197,16 @@ export default function CatalogManager({
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (
+      resource === "categories"
+      && requiresSolarPanelSlug
+      && !isValidSolarPanelSlug(draft.slug)
+    ) {
+      setError("Slug danh mục tấm pin phải có dạng tam-pin-ten-danh-muc.");
+      setNotice("");
+      return;
+    }
+
     setSaving(true);
     setError("");
     setNotice("");
@@ -282,6 +312,26 @@ export default function CatalogManager({
           </label>
 
           {resource === "categories" && (
+            <label>
+              Danh mục cha
+              <select
+                required={!editingId}
+                value={draft.parentId}
+                onChange={(event) => setDraft({ ...draft, parentId: event.target.value })}
+              >
+                <option value="" disabled={!editingId}>Không có</option>
+                {parents
+                  .filter((parent) => !excludedParents.has(parent.id))
+                  .map((parent) => (
+                    <option key={parent.id} value={parent.id}>
+                      {parent.parentId ? "↳ " : ""}{parent.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          )}
+
+          {resource === "categories" && (
             <>
               <div className="admin-form-grid">
                 <label>
@@ -289,35 +339,29 @@ export default function CatalogManager({
                   <input
                     required
                     maxLength={180}
-                    placeholder="ten-danh-muc"
+                    placeholder={requiresSolarPanelSlug ? "tam-pin-ten-danh-muc" : "ten-danh-muc"}
                     value={draft.slug}
                     onChange={(event) => {
                       setSlugManuallyEdited(true);
                       setDraft({ ...draft, slug: event.target.value });
                     }}
                   />
-                </label>
-                <label>
-                  Danh mục cha
-                  <select
-                    value={draft.parentId}
-                    onChange={(event) => setDraft({ ...draft, parentId: event.target.value })}
-                  >
-                    <option value="">Không có</option>
-                    {parents
-                      .filter((parent) => !excludedParents.has(parent.id))
-                      .map((parent) => (
-                        <option key={parent.id} value={parent.id}>
-                          {parent.parentId ? "↳ " : ""}{parent.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                <label>
-                  Khóa lọc catalog
-                  <input maxLength={160} value={draft.filterKey} onChange={(event) => setDraft({ ...draft, filterKey: event.target.value })} />
+                  {requiresSolarPanelSlug && (
+                    <span className="admin-help-text">
+                      Slug danh mục tấm pin phải bắt đầu bằng <code>tam-pin-</code>.
+                    </span>
+                  )}
+                  {!requiresSolarPanelSlug && (
+                    <span className="admin-help-text">
+                      Khi thêm danh mục con cho tấm pin, hãy chọn danh mục cha tấm pin để kiểm tra slug.
+                    </span>
+                  )}
                 </label>
               </div>
+              <label>
+                Khóa lọc catalog
+                <input maxLength={160} value={draft.filterKey} onChange={(event) => setDraft({ ...draft, filterKey: event.target.value })} />
+              </label>
               <label>
                 Mô tả
                 <textarea rows={4} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} />
