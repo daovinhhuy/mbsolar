@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 
 const slides: { src: string; alt: string }[] = [
   { src: "/image/background.jpg", alt: "Solar energy solution" },
@@ -11,6 +11,7 @@ const slides: { src: string; alt: string }[] = [
 
 export default function HeroSlider() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [slideAspectRatios, setSlideAspectRatios] = useState<number[]>([]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -24,8 +25,18 @@ export default function HeroSlider() {
     setActiveSlide((index + slides.length) % slides.length);
   };
 
+  const activeAspectRatio = slideAspectRatios[activeSlide];
+
   return (
-    <div className="hero-slider" aria-label="MB Solar banner slider">
+    <div
+      className="hero-slider"
+      aria-label="MB Solar banner slider"
+      style={
+        activeAspectRatio
+          ? ({ "--mobile-slide-aspect-ratio": `${activeAspectRatio}` } as CSSProperties)
+          : undefined
+      }
+    >
       <div
         className="hero-slides"
         style={{ transform: `translateX(-${activeSlide * 100}%)` }}
@@ -39,6 +50,18 @@ export default function HeroSlider() {
               preload={index === 0}
               unoptimized
               sizes="(max-width: 700px) 100vw, 1160px"
+              onLoad={(event) => {
+                const { naturalWidth, naturalHeight } = event.currentTarget;
+                if (!naturalWidth || !naturalHeight) return;
+
+                const aspectRatio = naturalWidth / naturalHeight;
+                setSlideAspectRatios((current) => {
+                  if (current[index] === aspectRatio) return current;
+                  const next = [...current];
+                  next[index] = aspectRatio;
+                  return next;
+                });
+              }}
             />
           </div>
         ))}

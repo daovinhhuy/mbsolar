@@ -95,8 +95,11 @@ export default function Header() {
           <Image src={logoMb} alt="MB Solar" priority />
         </Link>
         <div className="mobile-tagline">
-          <span>Năng lượng mặt trời MB Solar</span>
-          <span>Vì một hành tinh xanh</span>
+          <span className="mobile-tagline-brand">
+            <span className="mobile-tagline-mb">MB</span>{" "}
+            <span className="mobile-tagline-solar">SOLAR</span>
+          </span>
+          <span className="mobile-tagline-slogan">ENEGRY FOR THE FUTURE</span>
         </div>
         <input
           className="menu-checkbox"

@@ -418,6 +418,10 @@ body {
 }
 .hero-grid:has(.hero-slider) {
   min-height: 0 !important;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
 }
 .hero-slider {
   position: relative;
@@ -425,9 +429,12 @@ body {
   isolation: isolate;
   width: 100%;
   min-width: 0;
-  height: clamp(220px, 45vw, 525px);
+  height: auto;
+  aspect-ratio: 96 / 35;
   overflow: hidden;
-  border-radius: 4px;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
   grid-column: 1 / -1;
 }
 .hero-slides {
@@ -1201,8 +1208,10 @@ body {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.15fr 1.1fr 1.25fr;
-  gap: 35px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  max-width: 1000px;
+  margin-inline: auto;
+  gap: clamp(32px, 4vw, 52px);
   padding-bottom: 55px;
 }
 .footer-logo {
@@ -1215,7 +1224,7 @@ body {
   margin-top: 23px;
 }
 .footer .footer-intro {
-  margin-top: -30px;
+  margin-top: 0;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -2586,28 +2595,6 @@ body {
   max-width: 100%;
   object-fit: contain;
 }
-.footer .logo img {
-  transform: scale(1.885);
-  transform-origin: center;
-  margin-bottom: 69px;
-}
-.footer .logo {
-  width: 100%;
-  max-width: none;
-  justify-content: center;
-}
-@media (max-width: 700px) {
-  .footer .logo img {
-    max-width: 44.2%;
-    transform: scale(2.262);
-    margin-bottom: 61px;
-  }
-}
-@media (max-width: 480px) {
-  .footer .logo img {
-    margin-bottom: 56px;
-  }
-}
 @media (max-width: 700px) {
   .logo {
     max-width: calc(100% - 48px);
@@ -2854,7 +2841,8 @@ body {
 
 @media (max-width: 700px) {
   .hero-slider {
-    height: 280px;
+    height: auto;
+    aspect-ratio: var(--mobile-slide-aspect-ratio, 96 / 35);
     border-radius: 0;
   }
 
@@ -2884,7 +2872,8 @@ body {
 
 @media (max-width: 480px) {
   .hero-slider {
-    height: 220px;
+    height: auto;
+    aspect-ratio: var(--mobile-slide-aspect-ratio, 96 / 35);
   }
 
   .hero-slider-dots {
@@ -3038,9 +3027,23 @@ body {
     text-align: center;
   }
 
-  .mobile-tagline span {
+  .mobile-tagline > span {
     display: block;
     white-space: nowrap;
+  }
+
+  .mobile-tagline-mb {
+    color: #f4f4f8;
+  }
+
+  .mobile-tagline-solar {
+    color: #f4f4f8;
+  }
+
+  .mobile-tagline-slogan {
+    color: #f4f4f8;
+    font-size: 9px;
+    letter-spacing: 0.04em;
   }
 }
 .product-back-link a {
@@ -3075,4 +3078,109 @@ body {
 .product-back-link a:focus-visible {
   outline: 3px solid rgb(22 141 221 / 25%);
   outline-offset: 2px;
+}
+
+:root {
+  --brand-gradient: linear-gradient(112deg, #10344b 0%, #176888 100%);
+}
+
+.topbar,
+.site-header,
+.footer {
+  background: var(--brand-gradient);
+}
+
+.site-header {
+  border-bottom-color: rgb(255 255 255 / 16%);
+}
+
+.topbar,
+.topbar-inner .topbar-group > span,
+.topbar-inner .topbar-group > span:last-child {
+  color: #b9eaff;
+}
+
+.topbar b,
+.nav-link:hover,
+.nav-link.active {
+  color: #8edcff;
+}
+
+.nav-link {
+  color: #fff;
+}
+
+.nav-link.nav-login-link {
+  border-color: rgb(255 255 255 / 55%);
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+}
+
+.nav-link.nav-login-link:hover,
+.nav-link.nav-login-link.active {
+  border-color: #8edcff;
+  background: rgb(142 220 255 / 18%);
+  color: #fff;
+}
+
+.menu-toggle span,
+.mobile-tagline {
+  color: #fff;
+}
+
+.menu-toggle span {
+  background: #fff;
+}
+
+.footer {
+  color: #edf7fb;
+}
+
+.footer h4,
+.footer .contact-line,
+.footer .footer-email-line,
+.footer .footer-email-line a,
+.footer .footer-grid > div > a:not(.logo),
+.footer .socials a {
+  color: #edf7fb;
+}
+
+.footer h4 {
+  color: #8edcff;
+}
+
+.footer .footer-email-line a:hover,
+.footer .footer-grid > div > a:not(.logo):hover {
+  color: #8edcff;
+}
+
+@media (max-width: 1300px) {
+  .main-nav .nav-link,
+  .main-nav .nav-link.nav-login-link {
+    color: var(--ink);
+  }
+
+  .main-nav .nav-link:hover,
+  .main-nav .nav-link.active {
+    color: var(--blue);
+  }
+
+  .main-nav .nav-link.nav-login-link {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .main-nav .nav-link.nav-login-link:hover,
+  .main-nav .nav-link.nav-login-link.active {
+    border-color: #0878c2;
+    background: #0878c2;
+    color: #fff;
+  }
+}
+
+@media (min-width: 1301px) {
+  .site-header .logo img {
+    width: clamp(106px, 11.2vw, 152px);
+    height: 62px;
+  }
 }
