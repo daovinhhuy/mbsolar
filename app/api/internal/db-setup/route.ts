@@ -210,6 +210,15 @@ export async function POST(request: Request) {
       }
       await client.query('SET LOCAL search_path TO public');
       if (seed === 'catalog') {
+        await client.query(seedPartnersSql);
+        const verifiedPartners = await client.query<{ count: number }>(
+          'SELECT count(*)::int AS count FROM public.partners WHERE id = ANY($1::integer[])',
+          [seedPartnerIds],
+        );
+        if (verifiedPartners.rows[0].count !== seedPartnerIds.length) {
+          throw new SetupError(500, 'SEED_VERIFICATION_FAILED', 'Partner seed verification failed. This attempt was rolled back.');
+        }
+
         await client.query(catalogSeedSql);
         const verified = await client.query<{ products: number; solutions: number; image_links: number }>(
           `SELECT
@@ -241,7 +250,13 @@ export async function POST(request: Request) {
             (SELECT 1 FROM public.product_images pi WHERE pi.product_id = p.id)) AS products_without_images`);
         const after = await inspect(client);
         await client.query('COMMIT');
-        return json({ ok: true, mode: 'seed-catalog-only', catalog_records_verified: applied, totals: totals.rows[0], ...after });
+        return json({
+          ok: true,
+          mode: 'seed-catalog-only',
+          catalog_records_verified: { ...applied, partners: verifiedPartners.rows[0].count },
+          totals: totals.rows[0],
+          ...after,
+        });
       }
       await client.query(seedPartnersSql);
       const verifiedSeed = await client.query<{ count: number }>(
