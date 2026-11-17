@@ -3,6 +3,11 @@ import { Client } from 'pg';
 import { schemaSql } from './schema';
 import { seedPartnerIds, seedPartnersSql } from './seed-partners';
 import { catalogImageLinks, catalogProductSlugs, catalogSeedSql, catalogSolutionTitles } from './seed-catalog';
+import {
+  currentSchemaMigrationSql,
+  migrateLegacySolutionSectionsSql,
+  verifyCurrentSchemaMigrationSql,
+} from './current-schema-migration';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -113,14 +118,71 @@ async function withDatabase(request: Request, action: (client: Client) => Promis
 
 // Read-only: identify the actual database and list its public tables.
 export async function GET(request: Request) {
-  return withDatabase(request, async (client) => json({ ok: true, catalog_seed_available: true, ...await inspect(client) }));
+  return withDatabase(request, async (client) => json({
+    ok: true,
+    catalog_seed_available: true,
+    current_schema_migration_available: true,
+    ...await inspect(client),
+  }));
 }
 
 // Runs only fixed reviewed seeds; no SQL is accepted from requests.
 // Existing callers keep the partner-only behavior. Catalog import is explicit.
 export async function POST(request: Request) {
   return withDatabase(request, async (client) => {
-    const seed = new URL(request.url).searchParams.get('seed') ?? 'partners';
+    const requestUrl = new URL(request.url);
+    const migration = requestUrl.searchParams.get('migrate');
+    if (migration !== null) {
+      if (migration !== 'current-schema' || requestUrl.searchParams.has('seed')) {
+        return json({ error: 'INVALID_MIGRATION', message: 'Supported migration mode: current-schema.' }, 400);
+      }
+      await client.query('BEGIN');
+      try {
+        const lock = await client.query<{ acquired: boolean }>(
+          'SELECT pg_try_advisory_xact_lock(178463592, 1) AS acquired',
+        );
+        if (!lock.rows[0].acquired) {
+          throw new SetupError(409, 'SETUP_IN_PROGRESS', 'Another schema setup is running. Wait for it to finish.');
+        }
+        const before = await inspect(client);
+        if (before.missing_expected_tables.length !== 0) {
+          throw new SetupError(409, 'SCHEMA_INCOMPLETE', 'Required application tables are missing. No migration was applied.');
+        }
+        await client.query("SET LOCAL lock_timeout = '5s'");
+        await client.query('SET LOCAL search_path TO public');
+        await client.query(currentSchemaMigrationSql);
+        const migrated = await client.query(migrateLegacySolutionSectionsSql);
+        const verification = await client.query<{
+          category_group_present: boolean;
+          category_filter_key_removed: boolean;
+          solution_section_columns: number;
+        }>(verifyCurrentSchemaMigrationSql);
+        const applied = verification.rows[0];
+        if (
+          !applied?.category_group_present
+          || !applied.category_filter_key_removed
+          || applied.solution_section_columns !== 12
+        ) {
+          throw new SetupError(500, 'MIGRATION_VERIFICATION_FAILED', 'Schema verification failed. This migration was rolled back.');
+        }
+        await client.query('COMMIT');
+        return json({
+          ok: true,
+          mode: 'migrated-current-schema',
+          database_name: before.database_name,
+          migrated_solution_rows: migrated.rowCount ?? 0,
+          tables: {
+            categories: { category_group: 'present', filter_key: 'removed' },
+            solutions: { section_columns: applied.solution_section_columns },
+          },
+        });
+      } catch (error) {
+        await client.query('ROLLBACK').catch(() => undefined);
+        throw error;
+      }
+    }
+
+    const seed = requestUrl.searchParams.get('seed') ?? 'partners';
     if (seed !== 'partners' && seed !== 'catalog') {
       return json({ error: 'INVALID_SEED', message: 'Supported seed modes: partners, catalog.' }, 400);
     }
