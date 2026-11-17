@@ -13,7 +13,6 @@ type StorageBatteryProductRow = {
   brand_name: string;
   category_slug: string;
   category_name: string;
-  category_filter_key: string | null;
 };
 
 export async function GET(request: Request) {
@@ -26,7 +25,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const categorySlug = new URL(request.url).searchParams.get("category");
+  const categoryName = new URL(request.url).searchParams.get("category");
 
   try {
     const { rows } = await pool.query<StorageBatteryProductRow>(`
@@ -48,8 +47,7 @@ export async function GET(request: Request) {
         ) AS images,
         b.name AS brand_name,
         c.slug AS category_slug,
-        c.name AS category_name,
-        c.filter_key AS category_filter_key
+        c.name AS category_name
       FROM products AS p
       JOIN brands AS b ON b.id = p.brand_id
       JOIN categories AS c ON c.id = p.category_id
@@ -57,19 +55,16 @@ export async function GET(request: Request) {
       WHERE p.is_active = TRUE
         AND c.is_active = TRUE
         AND b.is_active = TRUE
-        AND ($1::TEXT IS NULL OR c.slug = $1)
         AND (
-          c.slug ILIKE '%battery%'
-          OR c.slug ILIKE '%storage%'
-          OR c.filter_key ILIKE '%battery%'
-          OR c.filter_key ILIKE '%storage%'
-          OR (c.name ILIKE '%pin%' AND c.name ILIKE '%lưu trữ%')
-          OR parent_category.slug ILIKE '%battery%'
-          OR parent_category.slug ILIKE '%storage%'
-          OR (parent_category.name ILIKE '%pin%' AND parent_category.name ILIKE '%lưu trữ%')
+          ($1::TEXT IS NULL AND c.category_group = 'storage_battery')
+          OR (
+            $1::TEXT IS NOT NULL
+            AND c.name = $1
+            AND c.category_group IN ('storage_battery', 'commercial_industrial')
+          )
         )
       ORDER BY c.sort_order, p.sort_order, p.name;
-    `, [categorySlug]);
+    `, [categoryName]);
 
     return Response.json({ products: rows });
   } catch (error) {

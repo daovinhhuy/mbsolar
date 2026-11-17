@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer">
       <div className="container footer-grid">
         <div className="footer-contact-info">
           <h4>THÔNG TIN LIÊN HỆ</h4>

@@ -11,12 +11,12 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM brands WHERE LOWER(name) = LOWER('Dyness')) THEN INSERT INTO brands (name,is_active) VALUES ('Dyness',TRUE); END IF;
 END;
 $$;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp','solax-battery-low-voltage','battery-low-voltage','Pin lưu trữ SolaX điện áp thấp.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX','solax-ci-industrial-storage','ci-storage','Hệ thống lưu trữ năng lượng công nghiệp C&I của SolaX.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','solis-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','sungrow-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Hithium điện áp thấp','hithium-battery-low-voltage','hithium-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Hithium.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Dyness điện áp thấp','dyness-battery-low-voltage','dyness-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Dyness.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp','solax-battery-low-voltage','Pin lưu trữ SolaX điện áp thấp.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX','solax-ci-industrial-storage','Hệ thống lưu trữ năng lượng công nghiệp C&I của SolaX.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Hithium điện áp thấp','hithium-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Hithium.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Dyness điện áp thấp','dyness-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Dyness.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-d53-ap-thap-triple-ld-53', 'SolaX T-BAT TSYS-D53 Áp thấp Triple LD 53', 'T-BAT TSYS-D53 Áp thấp Triple LD 53', 'Model: T-BAT TSYS-D53 Áp thấp Triple LD 53
 Công suất: 5.3kW
 Kích thước 645 x 150 x 430
@@ -252,4 +252,16 @@ Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 Ghi chú: SUNGROW
 BẢO HÀNH 10 NĂM 
 1 ĐỔI 1', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+
+UPDATE categories
+SET category_group = CASE
+    WHEN slug ILIKE 'tam-pin-%' THEN 'solar_panel'
+    WHEN slug ILIKE '%inverter%' THEN 'inverter'
+    WHEN slug = 'solax-ci-industrial-storage' THEN 'commercial_industrial'
+    WHEN slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc') THEN 'accessory'
+    WHEN slug ILIKE '%battery%' OR slug ILIKE '%storage%' THEN 'storage_battery'
+    ELSE category_group
+END
+WHERE category_group = 'other';
+
 COMMIT;

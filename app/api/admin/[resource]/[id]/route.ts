@@ -31,7 +31,7 @@ export async function PUT(request: Request, context: ItemContext) {
   }
 
   try {
-    const draft = parseContentDraft(await request.json());
+    const draft = parseContentDraft(await request.json(), resource);
     const savedId = await saveContent(getDatabaseConnection(), resource, draft, id);
     if (!savedId) return adminJson({ error: "Không tìm thấy nội dung." }, 404);
     return adminJson({ id: savedId });

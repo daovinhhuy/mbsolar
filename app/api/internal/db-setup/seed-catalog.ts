@@ -479,9 +479,9 @@ export const catalogImageLinks: { path: string; slug: string }[] = [
   }
 ];
 export const catalogSolutionTitles: string[] = [
-  "Giải pháp điện mặt trời cho hộ gia đình",
-  "Giải pháp điện mặt trời cho doanh nghiệp",
-  "Giải pháp điện mặt trời kết hợp lưu trữ"
+  "Tổng thầu EPC Điện mặt trời",
+  "Lắp đặt điện mặt trời cho khu công nghiệp",
+  "Lắp đặt điện mặt trời cho hộ gia đình"
 ];
 export const catalogSeedSql = `-- SOURCE: seed_inverter_categories.sql
 -- Adds the inverter brands and categories used by the inverter submenus.
@@ -493,32 +493,28 @@ VALUES
   ('Sungrow', TRUE)
 ON CONFLICT (name) DO UPDATE SET is_active = TRUE;
 
-INSERT INTO categories (name, slug, filter_key, description, sort_order)
+INSERT INTO categories (name, slug, description, sort_order)
 VALUES
   (
     'Inverter Hybrid Solis 1 phase',
     'solis-inverter-hybrid-1-phase',
-    'solis-hybrid-1phase',
     'Inverter hybrid Solis 1 phase.',
     0
   ),
   (
     'Inverter Hybrid Solis 3 phase',
     'solis-inverter-hybrid-3-phase',
-    'solis-hybrid-3phase',
     'Inverter hybrid Solis 3 phase.',
     0
   ),
   (
     'Inverter Hybrid Sungrow 1 phase',
     'sungrow-inverter-hybrid-1-phase',
-    'sungrow-hybrid-1phase',
     'Inverter hybrid Sungrow 1 phase.',
     0
   )
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
-  filter_key = EXCLUDED.filter_key,
   description = EXCLUDED.description,
   sort_order = EXCLUDED.sort_order;
 
@@ -526,11 +522,11 @@ ON CONFLICT (slug) DO UPDATE SET
 -- SolaX price list seed generated from the SolaX worksheet (26 products; prices include VAT).
 -- Safe to rerun: brands, categories, and products are upserted by stable names/slugs.
 INSERT INTO brands (name, is_active) VALUES ('SolaX Power', TRUE) ON CONFLICT (name) DO UPDATE SET is_active = TRUE;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 1 pha', 'solax-inverter-hybrid-1-phase', 'hybrid-1phase', 'INVERTER SOLAX HYBRID 1 PHASE (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp thấp', 'solax-inverter-hybrid-3-phase-low-voltage', 'hybrid-3phase-lv', 'INVERTER SOLAX HYBRID 3 PHASE Áp Thấp (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp cao', 'solax-inverter-hybrid-3-phase-high-voltage', 'hybrid-3phase-hv', 'INVERTER SOLAX HYBRID 3 PHASE Áp Cao', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp', 'solax-battery-low-voltage', 'battery-low-voltage', 'BATTERY ÁP THẤP SOLAX (Combo cùng Biến Tần SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX', 'solax-ci-industrial-storage', 'ci-storage', 'C&I ÁP CAO LƯU TRỮ CÔNG NGHIỆP', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 1 pha', 'solax-inverter-hybrid-1-phase', 'INVERTER SOLAX HYBRID 1 PHASE (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp thấp', 'solax-inverter-hybrid-3-phase-low-voltage', 'INVERTER SOLAX HYBRID 3 PHASE Áp Thấp (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp cao', 'solax-inverter-hybrid-3-phase-high-voltage', 'INVERTER SOLAX HYBRID 3 PHASE Áp Cao', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp', 'solax-battery-low-voltage', 'BATTERY ÁP THẤP SOLAX (Combo cùng Biến Tần SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX', 'solax-ci-industrial-storage', 'C&I ÁP CAO LƯU TRỮ CÔNG NGHIỆP', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
 
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE name = 'SolaX Power'),  (SELECT id FROM categories WHERE slug = 'solax-inverter-hybrid-1-phase'),  'solax-x1-hyb-5-0-lv-hybrid-5kw-ip65',  'SolaX X1-HYB-5.0-LV Hybrid 5kw IP65',  'X1-HYB-5.0-LV Hybrid 5kw IP65',  'Model: X1-HYB-5.0-LV Hybrid 5kw IP65
 2 MPPT, With DC Switch, Wifi + CT bám tải
@@ -839,11 +835,11 @@ Ghi chú: SolaX',  20) ON CONFLICT (slug) DO UPDATE SET brand_id = EXCLUDED.bran
 
 INSERT INTO brands (name,is_active) VALUES ('Solis',TRUE) ON CONFLICT (name) DO UPDATE SET is_active=TRUE;
 INSERT INTO brands (name,is_active) VALUES ('Sungrow',TRUE) ON CONFLICT (name) DO UPDATE SET is_active=TRUE;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Solis 1 phase','solis-inverter-hybrid-1-phase','solis-hybrid-1phase','Inverter hybrid Solis 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Solis 3 phase','solis-inverter-hybrid-3-phase','solis-hybrid-3phase','Inverter hybrid Solis 3 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Sungrow 1 phase','sungrow-inverter-hybrid-1-phase','sungrow-hybrid-1phase','Inverter hybrid Sungrow 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','solis-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','sungrow-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Solis 1 phase','solis-inverter-hybrid-1-phase','Inverter hybrid Solis 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Solis 3 phase','solis-inverter-hybrid-3-phase','Inverter hybrid Solis 3 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Sungrow 1 phase','sungrow-inverter-hybrid-1-phase','Inverter hybrid Sungrow 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
 
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE name='Solis'), (SELECT id FROM categories WHERE slug='solis-inverter-hybrid-1-phase'), 'solis-s6-eh1p6k-l-plus', 'Biến tần Inverter Hybrid Solis 6kW_Có Màn Hình LCD', 'S6-EH1P6K-L-PLUS', 'Biến tần Inverter Hybrid Solis 6kW_Có Màn Hình LCD
 Model: S6-EH1P6K-L-PLUS
@@ -1139,12 +1135,12 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM brands WHERE LOWER(name) = LOWER('Dyness')) THEN INSERT INTO brands (name,is_active) VALUES ('Dyness',TRUE); END IF;
 END;
 $$;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp','solax-battery-low-voltage','battery-low-voltage','Pin lưu trữ SolaX điện áp thấp.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX','solax-ci-industrial-storage','ci-storage','Hệ thống lưu trữ năng lượng công nghiệp C&I của SolaX.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','solis-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','sungrow-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Hithium điện áp thấp','hithium-battery-low-voltage','hithium-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Hithium.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Dyness điện áp thấp','dyness-battery-low-voltage','dyness-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Dyness.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp','solax-battery-low-voltage','Pin lưu trữ SolaX điện áp thấp.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX','solax-ci-industrial-storage','Hệ thống lưu trữ năng lượng công nghiệp C&I của SolaX.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Hithium điện áp thấp','hithium-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Hithium.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Dyness điện áp thấp','dyness-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Dyness.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE LOWER(name)=LOWER('SolaX Power') ORDER BY id LIMIT 1), (SELECT id FROM categories WHERE slug='solax-battery-low-voltage'), 'solax-t-bat-tsys-d53-ap-thap-triple-ld-53', 'SolaX T-BAT TSYS-D53 Áp thấp Triple LD 53', 'T-BAT TSYS-D53 Áp thấp Triple LD 53', 'Model: T-BAT TSYS-D53 Áp thấp Triple LD 53
 Công suất: 5.3kW
 Kích thước 645 x 150 x 430
@@ -1643,4 +1639,101 @@ FROM (VALUES
 JOIN solutions AS solution ON solution.title = seed.title
 JOIN images AS image ON image.path = seed.path
 ON CONFLICT (solution_id, image_id) DO NOTHING;
+
+-- Store the six ordered image/content slots directly on each solution row.
+UPDATE solutions AS solution
+SET
+    introduction = seed.introduction,
+    content = concat_ws(E'\\n\\n', seed.content_1, seed.content_2, seed.content_3, seed.content_4, seed.content_5, seed.content_6),
+    image_1 = seed.image_1,
+    content_1 = seed.content_1,
+    image_2 = seed.image_2,
+    content_2 = seed.content_2,
+    image_3 = seed.image_3,
+    content_3 = seed.content_3,
+    image_4 = seed.image_4,
+    content_4 = seed.content_4,
+    image_5 = seed.image_5,
+    content_5 = seed.content_5,
+    image_6 = seed.image_6,
+    content_6 = seed.content_6,
+    sort_order = seed.sort_order
+FROM (VALUES
+    (
+        'Giải pháp điện mặt trời cho doanh nghiệp',
+        'Tổng thầu EPC Điện mặt trời',
+        'MB Solar cung cấp giải pháp tổng thầu EPC trọn gói từ khảo sát, thiết kế và cung cấp thiết bị đến thi công, nghiệm thu công trình.',
+        '/image/backgroundMB1.jpg',
+        'Khảo sát hiện trạng công trình, mái và nhu cầu sử dụng điện để xác định phương án phù hợp.',
+        'Thiết kế hệ thống và hồ sơ kỹ thuật theo điều kiện vận hành của dự án.',
+        'Lựa chọn tấm pin, inverter và thiết bị đồng bộ theo yêu cầu công trình.',
+        'Thi công, lắp đặt và đấu nối hệ thống theo thiết kế được thống nhất.',
+        'Kiểm tra, chạy thử và nghiệm thu các hạng mục trước khi bàn giao.',
+        'Hướng dẫn vận hành và hỗ trợ kỹ thuật sau khi hệ thống đi vào hoạt động.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 0
+    ),
+    (
+        'Giải pháp điện mặt trời kết hợp lưu trữ',
+        'Lắp đặt điện mặt trời cho khu công nghiệp',
+        'Giải pháp cho nhà xưởng và khu công nghiệp được thiết kế theo hiện trạng mái, biểu đồ phụ tải và yêu cầu vận hành của doanh nghiệp.',
+        '/image/background.jpg',
+        'Khảo sát mái nhà xưởng, kết cấu chịu lực và điều kiện tiếp cận thi công.',
+        'Phân tích nhu cầu điện và biểu đồ phụ tải theo hoạt động của nhà máy.',
+        'Đề xuất công suất, hướng lắp đặt và cấu hình hệ thống phù hợp.',
+        'Lắp đặt khung giá đỡ, tấm pin và thiết bị chuyển đổi điện.',
+        'Đấu nối, kiểm tra an toàn và chạy thử hệ thống theo phương án kỹ thuật.',
+        'Bàn giao hồ sơ, hướng dẫn theo dõi sản lượng và hỗ trợ vận hành.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 1
+    ),
+    (
+        'Giải pháp điện mặt trời cho hộ gia đình',
+        'Lắp đặt điện mặt trời cho hộ gia đình',
+        'Hệ thống điện mặt trời gia đình được tư vấn theo diện tích mái, hóa đơn điện, nhu cầu sử dụng và điều kiện lắp đặt thực tế.',
+        '/image/background2.jpg',
+        'Khảo sát mái nhà và trao đổi với gia đình về mức tiêu thụ điện.',
+        'Tính toán công suất hệ thống phù hợp với nhu cầu sử dụng hằng ngày.',
+        'Tư vấn vị trí lắp đặt tấm pin để tận dụng tốt diện tích mái.',
+        'Lắp đặt inverter, tủ điện và các thiết bị bảo vệ cần thiết.',
+        'Kiểm tra đấu nối, cấu hình và hướng dẫn gia đình sử dụng hệ thống.',
+        'Theo dõi hoạt động và hỗ trợ kỹ thuật sau khi bàn giao.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 2
+    )
+) AS seed(
+    old_title, title, introduction, image_1,
+    content_1, content_2, content_3, content_4, content_5, content_6,
+    image_2, image_3, image_4, image_5, image_6, sort_order
+)
+WHERE solution.title IN (seed.old_title, seed.title);
+
+
+UPDATE categories
+SET category_group = CASE
+    WHEN slug ILIKE 'tam-pin-%' THEN 'solar_panel'
+    WHEN slug ILIKE '%inverter%' THEN 'inverter'
+    WHEN slug = 'solax-ci-industrial-storage'
+        THEN 'commercial_industrial'
+    WHEN slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc')
+        THEN 'accessory'
+    WHEN slug ILIKE '%battery%' OR slug ILIKE '%storage%'
+        THEN 'storage_battery'
+    ELSE category_group
+END
+WHERE category_group = 'other';
+
+WITH RECURSIVE categorized_children AS (
+    SELECT id, parent_id, category_group
+    FROM categories
+    WHERE category_group <> 'other'
+    UNION
+    SELECT child.id, child.parent_id, parent.category_group
+    FROM categories AS child
+    JOIN categorized_children AS parent ON child.parent_id = parent.id
+    WHERE child.category_group = 'other'
+)
+UPDATE categories AS category
+SET category_group = categorized_children.category_group
+FROM categorized_children
+WHERE category.id = categorized_children.id
+  AND category.category_group = 'other';
+
 `;

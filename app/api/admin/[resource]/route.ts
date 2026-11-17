@@ -42,7 +42,7 @@ export async function POST(request: Request, context: ResourceContext) {
   if (!isContentResource(resource)) return adminJson({ error: "Không tìm thấy mục quản lý." }, 404);
 
   try {
-    const draft = parseContentDraft(await request.json());
+    const draft = parseContentDraft(await request.json(), resource);
     const id = await saveContent(getDatabaseConnection(), resource, draft);
     if (!id) return adminJson({ error: "Không thể tạo nội dung." }, 500);
     return adminJson({ id }, 201);

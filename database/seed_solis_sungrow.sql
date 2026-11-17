@@ -4,11 +4,11 @@
 BEGIN;
 INSERT INTO brands (name,is_active) VALUES ('Solis',TRUE) ON CONFLICT (name) DO UPDATE SET is_active=TRUE;
 INSERT INTO brands (name,is_active) VALUES ('Sungrow',TRUE) ON CONFLICT (name) DO UPDATE SET is_active=TRUE;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Solis 1 phase','solis-inverter-hybrid-1-phase','solis-hybrid-1phase','Inverter hybrid Solis 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Solis 3 phase','solis-inverter-hybrid-3-phase','solis-hybrid-3phase','Inverter hybrid Solis 3 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Inverter Hybrid Sungrow 1 phase','sungrow-inverter-hybrid-1-phase','sungrow-hybrid-1phase','Inverter hybrid Sungrow 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','solis-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
-INSERT INTO categories (name,slug,filter_key,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','sungrow-battery-lv','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,filter_key=EXCLUDED.filter_key,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Solis 1 phase','solis-inverter-hybrid-1-phase','Inverter hybrid Solis 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Solis 3 phase','solis-inverter-hybrid-3-phase','Inverter hybrid Solis 3 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Inverter Hybrid Sungrow 1 phase','sungrow-inverter-hybrid-1-phase','Inverter hybrid Sungrow 1 phase.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Solis điện áp thấp','solis-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Solis.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
+INSERT INTO categories (name,slug,description,sort_order) VALUES ('Pin lưu trữ Sungrow điện áp thấp','sungrow-battery-low-voltage','Pin lưu trữ điện áp thấp thương hiệu Sungrow.',0) ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description;
 
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE name='Solis'), (SELECT id FROM categories WHERE slug='solis-inverter-hybrid-1-phase'), 'solis-s6-eh1p6k-l-plus', 'Biến tần Inverter Hybrid Solis 6kW_Có Màn Hình LCD', 'S6-EH1P6K-L-PLUS', 'Biến tần Inverter Hybrid Solis 6kW_Có Màn Hình LCD
 Model: S6-EH1P6K-L-PLUS
@@ -289,4 +289,16 @@ Bảo hành tiêu chuẩn: Bảo hành tiêu chuẩn 10 năm
 Ghi chú: SUNGROW
 BẢO HÀNH 10 NĂM 
 1 ĐỔI 1', 0) ON CONFLICT (slug) DO UPDATE SET brand_id=EXCLUDED.brand_id, category_id=EXCLUDED.category_id, name=EXCLUDED.name, model_number=EXCLUDED.model_number, description=EXCLUDED.description, sort_order=EXCLUDED.sort_order;
+
+UPDATE categories
+SET category_group = CASE
+    WHEN slug ILIKE 'tam-pin-%' THEN 'solar_panel'
+    WHEN slug ILIKE '%inverter%' THEN 'inverter'
+    WHEN slug = 'solax-ci-industrial-storage' THEN 'commercial_industrial'
+    WHEN slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc') THEN 'accessory'
+    WHEN slug ILIKE '%battery%' OR slug ILIKE '%storage%' THEN 'storage_battery'
+    ELSE category_group
+END
+WHERE category_group = 'other';
+
 COMMIT;

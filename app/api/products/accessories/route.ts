@@ -13,7 +13,6 @@ type AccessoryProductRow = {
   brand_name: string;
   category_slug: string;
   category_name: string;
-  category_filter_key: string | null;
 };
 
 export async function GET() {
@@ -46,8 +45,7 @@ export async function GET() {
         ) AS images,
         b.name AS brand_name,
         c.slug AS category_slug,
-        c.name AS category_name,
-        c.filter_key AS category_filter_key
+        c.name AS category_name
       FROM products AS p
       JOIN brands AS b ON b.id = p.brand_id
       JOIN categories AS c ON c.id = p.category_id
@@ -56,8 +54,8 @@ export async function GET() {
         AND b.is_active = TRUE
         AND c.is_active = TRUE
         AND (
-          c.slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc')
-          OR parent_category.slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc')
+          c.category_group = 'accessory'
+          OR parent_category.category_group = 'accessory'
         )
       ORDER BY c.sort_order, p.sort_order, p.name;
     `);

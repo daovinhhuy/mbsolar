@@ -19,7 +19,6 @@ type StorageBatteryProductResponse = {
   brand_name: string;
   category_slug: string;
   category_name: string;
-  category_filter_key: string | null;
 };
 
 type StorageBatteryCatalogProps = {

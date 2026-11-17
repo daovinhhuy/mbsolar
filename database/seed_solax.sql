@@ -1,11 +1,11 @@
 -- SolaX price list seed generated from the SolaX worksheet (26 products; prices include VAT).
 -- Safe to rerun: brands, categories, and products are upserted by stable names/slugs.
 INSERT INTO brands (name, is_active) VALUES ('SolaX Power', TRUE) ON CONFLICT (name) DO UPDATE SET is_active = TRUE;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 1 pha', 'solax-inverter-hybrid-1-phase', 'hybrid-1phase', 'INVERTER SOLAX HYBRID 1 PHASE (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp thấp', 'solax-inverter-hybrid-3-phase-low-voltage', 'hybrid-3phase-lv', 'INVERTER SOLAX HYBRID 3 PHASE Áp Thấp (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp cao', 'solax-inverter-hybrid-3-phase-high-voltage', 'hybrid-3phase-hv', 'INVERTER SOLAX HYBRID 3 PHASE Áp Cao', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp', 'solax-battery-low-voltage', 'battery-low-voltage', 'BATTERY ÁP THẤP SOLAX (Combo cùng Biến Tần SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
-INSERT INTO categories (name, slug, filter_key, description, sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX', 'solax-ci-industrial-storage', 'ci-storage', 'C&I ÁP CAO LƯU TRỮ CÔNG NGHIỆP', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, filter_key = EXCLUDED.filter_key, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 1 pha', 'solax-inverter-hybrid-1-phase', 'INVERTER SOLAX HYBRID 1 PHASE (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp thấp', 'solax-inverter-hybrid-3-phase-low-voltage', 'INVERTER SOLAX HYBRID 3 PHASE Áp Thấp (Combo cùng Pin lưu trữ SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Inverter Hybrid SolaX 3 pha điện áp cao', 'solax-inverter-hybrid-3-phase-high-voltage', 'INVERTER SOLAX HYBRID 3 PHASE Áp Cao', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Pin lưu trữ SolaX điện áp thấp', 'solax-battery-low-voltage', 'BATTERY ÁP THẤP SOLAX (Combo cùng Biến Tần SOLAX BH 10 Năm)', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
+INSERT INTO categories (name, slug, description, sort_order) VALUES ('Hệ thống lưu trữ công nghiệp C&I SolaX', 'solax-ci-industrial-storage', 'C&I ÁP CAO LƯU TRỮ CÔNG NGHIỆP', 0) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description;
 
 INSERT INTO products (brand_id, category_id, slug, name, model_number, description, sort_order) VALUES ((SELECT id FROM brands WHERE name = 'SolaX Power'),  (SELECT id FROM categories WHERE slug = 'solax-inverter-hybrid-1-phase'),  'solax-x1-hyb-5-0-lv-hybrid-5kw-ip65',  'SolaX X1-HYB-5.0-LV Hybrid 5kw IP65',  'X1-HYB-5.0-LV Hybrid 5kw IP65',  'Model: X1-HYB-5.0-LV Hybrid 5kw IP65
 2 MPPT, With DC Switch, Wifi + CT bám tải
@@ -306,4 +306,16 @@ INSERT INTO products (brand_id, category_id, slug, name, model_number, descripti
 – Quá tải: 120% (1 phút)
 
 Ghi chú: SolaX',  20) ON CONFLICT (slug) DO UPDATE SET brand_id = EXCLUDED.brand_id,  category_id = EXCLUDED.category_id,  name = EXCLUDED.name,  model_number = EXCLUDED.model_number,  description = EXCLUDED.description,  sort_order = EXCLUDED.sort_order;
+
+UPDATE categories
+SET category_group = CASE
+    WHEN slug ILIKE 'tam-pin-%' THEN 'solar_panel'
+    WHEN slug ILIKE '%inverter%' THEN 'inverter'
+    WHEN slug = 'solax-ci-industrial-storage' THEN 'commercial_industrial'
+    WHEN slug IN ('phu-kien', 'tu-dien-hybrid', 'day-dien-dc') THEN 'accessory'
+    WHEN slug ILIKE '%battery%' OR slug ILIKE '%storage%' THEN 'storage_battery'
+    ELSE category_group
+END
+WHERE category_group = 'other';
+
 COMMIT;

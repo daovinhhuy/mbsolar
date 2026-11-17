@@ -5,7 +5,7 @@ import type {
 } from "@/data/products";
 
 export type StorageBatteryCatalogOptions = {
-  categorySlug?: string;
+  categoryName?: string;
 };
 
 type ApiProduct = {
@@ -51,8 +51,8 @@ export async function getStorageBatteryCatalog(
     (process.env.NODE_ENV === "development" || isLocalHost ? "http" : "https");
   const searchParams = new URLSearchParams();
 
-  if (options.categorySlug) {
-    searchParams.set("category", options.categorySlug);
+  if (options.categoryName) {
+    searchParams.set("category", options.categoryName);
   }
 
   const serializedSearchParams = searchParams.toString();

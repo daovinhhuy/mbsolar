@@ -73,28 +73,23 @@ export async function GET(request: Request) {
       JOIN categories AS c ON c.id = p.category_id
       LEFT JOIN categories AS parent_category ON parent_category.id = c.parent_id
       WHERE (
-        c.slug ILIKE '%inverter%'
-        OR c.name ILIKE '%inverter%'
-        OR parent_category.slug ILIKE '%inverter%'
-        OR parent_category.name ILIKE '%inverter%'
+        c.category_group = 'inverter'
+        OR parent_category.category_group = 'inverter'
       )
         AND ($1::TEXT IS NULL OR LOWER(b.name) LIKE $1)
          AND (
            $2::TEXT IS NULL
            OR ($2 = '1' AND (
-             c.slug ILIKE '%1-phase%'
-             OR c.name ILIKE '%1 pha%'
+             c.name ILIKE '%1 pha%'
              OR c.name ILIKE '%1 phase%'
            ))
            OR ($2 = '3' AND (
-             c.slug ILIKE '%3-phase%'
-             OR c.name ILIKE '%3 pha%'
+             c.name ILIKE '%3 pha%'
              OR c.name ILIKE '%3 phase%'
            ))
          )
         AND ($3::TEXT IS NULL OR (
-          c.slug ILIKE '%high-voltage%'
-          OR c.name ILIKE '%áp cao%'
+          c.name ILIKE '%\u00e1p cao%'
         ))
       ORDER BY c.sort_order, p.sort_order, p.name;
     `, [brandKey ? brandPatterns[brandKey] : null, phase, voltage]);
