@@ -53,6 +53,7 @@ ON CONFLICT (solution_id, image_id) DO NOTHING;
 -- Store the six ordered image/content slots directly on each solution row.
 UPDATE solutions AS solution
 SET
+    title = seed.title,
     introduction = seed.introduction,
     content = concat_ws(E'\n\n', seed.content_1, seed.content_2, seed.content_3, seed.content_4, seed.content_5, seed.content_6),
     image_1 = seed.image_1,
