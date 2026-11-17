@@ -50,4 +50,69 @@ JOIN solutions AS solution ON solution.title = seed.title
 JOIN images AS image ON image.path = seed.path
 ON CONFLICT (solution_id, image_id) DO NOTHING;
 
+-- Store the six ordered image/content slots directly on each solution row.
+UPDATE solutions AS solution
+SET
+    introduction = seed.introduction,
+    content = concat_ws(E'\n\n', seed.content_1, seed.content_2, seed.content_3, seed.content_4, seed.content_5, seed.content_6),
+    image_1 = seed.image_1,
+    content_1 = seed.content_1,
+    image_2 = seed.image_2,
+    content_2 = seed.content_2,
+    image_3 = seed.image_3,
+    content_3 = seed.content_3,
+    image_4 = seed.image_4,
+    content_4 = seed.content_4,
+    image_5 = seed.image_5,
+    content_5 = seed.content_5,
+    image_6 = seed.image_6,
+    content_6 = seed.content_6,
+    sort_order = seed.sort_order
+FROM (VALUES
+    (
+        'Giải pháp điện mặt trời cho doanh nghiệp',
+        'Tổng thầu EPC Điện mặt trời',
+        'MB Solar cung cấp giải pháp tổng thầu EPC trọn gói từ khảo sát, thiết kế và cung cấp thiết bị đến thi công, nghiệm thu công trình.',
+        '/image/backgroundMB1.jpg',
+        'Khảo sát hiện trạng công trình, mái và nhu cầu sử dụng điện để xác định phương án phù hợp.',
+        'Thiết kế hệ thống và hồ sơ kỹ thuật theo điều kiện vận hành của dự án.',
+        'Lựa chọn tấm pin, inverter và thiết bị đồng bộ theo yêu cầu công trình.',
+        'Thi công, lắp đặt và đấu nối hệ thống theo thiết kế được thống nhất.',
+        'Kiểm tra, chạy thử và nghiệm thu các hạng mục trước khi bàn giao.',
+        'Hướng dẫn vận hành và hỗ trợ kỹ thuật sau khi hệ thống đi vào hoạt động.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 0
+    ),
+    (
+        'Giải pháp điện mặt trời kết hợp lưu trữ',
+        'Lắp đặt điện mặt trời cho khu công nghiệp',
+        'Giải pháp cho nhà xưởng và khu công nghiệp được thiết kế theo hiện trạng mái, biểu đồ phụ tải và yêu cầu vận hành của doanh nghiệp.',
+        '/image/background.jpg',
+        'Khảo sát mái nhà xưởng, kết cấu chịu lực và điều kiện tiếp cận thi công.',
+        'Phân tích nhu cầu điện và biểu đồ phụ tải theo hoạt động của nhà máy.',
+        'Đề xuất công suất, hướng lắp đặt và cấu hình hệ thống phù hợp.',
+        'Lắp đặt khung giá đỡ, tấm pin và thiết bị chuyển đổi điện.',
+        'Đấu nối, kiểm tra an toàn và chạy thử hệ thống theo phương án kỹ thuật.',
+        'Bàn giao hồ sơ, hướng dẫn theo dõi sản lượng và hỗ trợ vận hành.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 1
+    ),
+    (
+        'Giải pháp điện mặt trời cho hộ gia đình',
+        'Lắp đặt điện mặt trời cho hộ gia đình',
+        'Hệ thống điện mặt trời gia đình được tư vấn theo diện tích mái, hóa đơn điện, nhu cầu sử dụng và điều kiện lắp đặt thực tế.',
+        '/image/background2.jpg',
+        'Khảo sát mái nhà và trao đổi với gia đình về mức tiêu thụ điện.',
+        'Tính toán công suất hệ thống phù hợp với nhu cầu sử dụng hằng ngày.',
+        'Tư vấn vị trí lắp đặt tấm pin để tận dụng tốt diện tích mái.',
+        'Lắp đặt inverter, tủ điện và các thiết bị bảo vệ cần thiết.',
+        'Kiểm tra đấu nối, cấu hình và hướng dẫn gia đình sử dụng hệ thống.',
+        'Theo dõi hoạt động và hỗ trợ kỹ thuật sau khi bàn giao.',
+        NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, NULL::TEXT, 2
+    )
+) AS seed(
+    old_title, title, introduction, image_1,
+    content_1, content_2, content_3, content_4, content_5, content_6,
+    image_2, image_3, image_4, image_5, image_6, sort_order
+)
+WHERE solution.title IN (seed.old_title, seed.title);
+
 COMMIT;

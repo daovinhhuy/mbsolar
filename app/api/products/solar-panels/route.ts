@@ -54,8 +54,8 @@ export async function GET() {
         AND b.is_active = TRUE
         AND c.is_active = TRUE
         AND (
-          c.slug ILIKE 'tam-pin-%'
-          OR parent_category.slug ILIKE 'tam-pin-%'
+          c.category_group = 'solar_panel'
+          OR parent_category.category_group = 'solar_panel'
         )
       ORDER BY c.sort_order, p.sort_order, p.name;
     `);

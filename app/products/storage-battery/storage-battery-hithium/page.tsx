@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function HithiumStorageBatteryPage() {
   return (
     <StorageBatterySubcategoryPage
-      categorySlug="hithium-battery-low-voltage"
+      categoryName={"Pin l\u01b0u tr\u1eef Hithium \u0111i\u1ec7n \u00e1p th\u1ea5p"}
       title="Pin lưu trữ Hithium"
       description="Pin lưu trữ Hithium điện áp thấp, phù hợp cho hệ thống điện mặt trời dân dụng."
     />

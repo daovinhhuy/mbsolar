@@ -4,17 +4,17 @@ import ProductCatalog from "@/component/ProductCatalog";
 import { getStorageBatteryCatalog } from "@/services/storageBatteryCatalog";
 
 type StorageBatterySubcategoryPageProps = {
-  categorySlug: string;
+  categoryName: string;
   title: string;
   description: string;
 };
 
 export default async function StorageBatterySubcategoryPage({
-  categorySlug,
+  categoryName,
   title,
   description,
 }: StorageBatterySubcategoryPageProps) {
-  const catalog = await getStorageBatteryCatalog({ categorySlug });
+  const catalog = await getStorageBatteryCatalog({ categoryName });
 
   return (
     <>

@@ -9,8 +9,6 @@ import logoMb from "@/public/image/logoMB-header.png";
 function itemHref(item: string) {
   if (item === "Pin lưu trữ Hithium")
     return "/products/storage-battery/storage-battery-hithium";
-  if (item === "Hệ thống lưu trữ công nghiệp C&I SolaX")
-    return "/products/storage-battery/c&i-industry";
   if (item === "Inverter SolaX Hybrid 1 phase")
     return "/products/inverter/solax-hybrid-1-phase";
   if (item === "Inverter SolaX Hybrid 3 phase")

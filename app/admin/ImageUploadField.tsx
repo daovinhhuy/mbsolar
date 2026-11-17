@@ -40,12 +40,14 @@ type ImageUploadFieldProps = {
   value: string;
   placeholder: string;
   helpText: string;
+  multiple?: boolean;
+  maxImages?: number;
   onChange: (value: string) => void;
   onUploadingChange: (uploading: boolean) => void;
 };
 
 const ImageUploadField = forwardRef<ImageUploadFieldHandle, ImageUploadFieldProps>(
-  function ImageUploadField({ label, value, placeholder, helpText, onChange, onUploadingChange }, ref) {
+  function ImageUploadField({ label, value, placeholder, helpText, multiple = true, maxImages = MAX_IMAGES, onChange, onUploadingChange }, ref) {
     const inputRef = useRef<HTMLInputElement>(null);
     const [files, setFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -55,9 +57,11 @@ const ImageUploadField = forwardRef<ImageUploadFieldHandle, ImageUploadFieldProp
     const uploadSelectedFiles = useCallback(async () => {
       if (files.length === 0) return [];
 
-      const sources = value.split(/\r?\n/).map((source) => source.trim()).filter(Boolean);
-      if (sources.length + files.length > MAX_IMAGES) {
-        const message = `Mỗi mục chỉ được có tối đa ${MAX_IMAGES} ảnh.`;
+      const sources = multiple
+        ? value.split(/\r?\n/).map((source) => source.trim()).filter(Boolean)
+        : [];
+      if (sources.length + files.length > maxImages) {
+        const message = `Mỗi mục chỉ được có tối đa ${maxImages} ảnh.`;
         setError(message);
         throw new Error(message);
       }
@@ -132,7 +136,7 @@ const ImageUploadField = forwardRef<ImageUploadFieldHandle, ImageUploadFieldProp
         setUploading(false);
         onUploadingChange(false);
       }
-    }, [files, onChange, onUploadingChange, value]);
+    }, [files, maxImages, onChange, onUploadingChange, value]);
 
     useImperativeHandle(ref, () => ({ uploadSelectedFiles }), [uploadSelectedFiles]);
 
@@ -143,7 +147,7 @@ const ImageUploadField = forwardRef<ImageUploadFieldHandle, ImageUploadFieldProp
           ref={inputRef}
           accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
           className="admin-file-input-hidden"
-          multiple
+          multiple={multiple}
           onChange={(event) => {
             setFiles(Array.from(event.target.files ?? []));
             setError("");

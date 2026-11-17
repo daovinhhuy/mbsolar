@@ -13,30 +13,28 @@ type CategoryItem = {
   id: string;
   name: string;
   slug: string;
-  parentId: string | null;
-  parentName: string | null;
-  filterKey: string | null;
+  categoryGroup: CategoryGroup;
   description: string | null;
   sortOrder: number;
   isActive: boolean;
-  isSolarPanel: boolean;
   productCount: number;
-  childCount: number;
 };
 
-type CategoryParent = {
-  id: string;
-  name: string;
-  parentId: string | null;
-  isSolarPanel: boolean;
+type CategoryGroup = "solar_panel" | "inverter" | "storage_battery" | "commercial_industrial" | "accessory" | "other";
+const categoryGroupLabels: Record<CategoryGroup, string> = {
+  solar_panel: "Tấm pin",
+  inverter: "Inverter",
+  storage_battery: "Pin lưu trữ",
+  commercial_industrial: "Hệ thống C&I",
+  accessory: "Phụ kiện",
+  other: "Khác",
 };
 type CatalogResource = "brands" | "categories";
 type CatalogItem = BrandItem | CategoryItem;
 type CatalogDraft = {
   name: string;
   slug: string;
-  parentId: string;
-  filterKey: string;
+  categoryGroup: CategoryGroup;
   description: string;
   sortOrder: string;
   isActive: boolean;
@@ -45,8 +43,7 @@ type CatalogDraft = {
 const emptyDraft: CatalogDraft = {
   name: "",
   slug: "",
-  parentId: "",
-  filterKey: "",
+  categoryGroup: "other",
   description: "",
   sortOrder: "0",
   isActive: true,
@@ -54,7 +51,6 @@ const emptyDraft: CatalogDraft = {
 
 type CatalogLoadResult = {
   items?: CatalogItem[];
-  parents?: CategoryParent[];
   error?: string;
 };
 
@@ -76,25 +72,6 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function isValidSolarPanelSlug(value: string) {
-  return /^tam-pin-[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(value.trim());
-}
-
-function getDescendantIds(categories: CategoryParent[], id: string) {
-  const result = new Set([id]);
-  let added = true;
-  while (added) {
-    added = false;
-    for (const category of categories) {
-      if (category.parentId && result.has(category.parentId) && !result.has(category.id)) {
-        result.add(category.id);
-        added = true;
-      }
-    }
-  }
-  return result;
-}
-
 export default function CatalogManager({
   resource,
   title,
@@ -103,7 +80,6 @@ export default function CatalogManager({
   title: string;
 }) {
   const [items, setItems] = useState<CatalogItem[]>([]);
-  const [parents, setParents] = useState<CategoryParent[]>([]);
   const [draft, setDraft] = useState<CatalogDraft>(emptyDraft);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
@@ -115,7 +91,6 @@ export default function CatalogManager({
 
   const applyLoadResult = useCallback((result: CatalogLoadResult) => {
     setItems(result.items ?? []);
-    setParents(result.parents ?? []);
   }, []);
 
   const load = useCallback(async () => {
@@ -152,17 +127,6 @@ export default function CatalogManager({
 
   const brands = resource === "brands" ? (items as BrandItem[]) : [];
   const categories = resource === "categories" ? (items as CategoryItem[]) : [];
-  const selectedParent = parents.find((parent) => parent.id === draft.parentId);
-  const editingCategory = categories.find((category) => category.id === editingId);
-  const slugLooksLikeSolarPanel =
-    draft.slug.toLowerCase() === "tam-pin"
-    || draft.slug.toLowerCase().startsWith("tam-pin-");
-  const requiresSolarPanelSlug = Boolean(
-    selectedParent?.isSolarPanel
-      || editingCategory?.isSolarPanel
-      || slugLooksLikeSolarPanel,
-  );
-
   function resetForm() {
     setEditingId(null);
     setSlugManuallyEdited(false);
@@ -184,8 +148,7 @@ export default function CatalogManager({
       setDraft({
         name: category.name,
         slug: category.slug,
-        parentId: category.parentId ?? "",
-        filterKey: category.filterKey ?? "",
+        categoryGroup: category.categoryGroup,
         description: category.description ?? "",
         sortOrder: String(category.sortOrder),
         isActive: category.isActive,
@@ -197,16 +160,6 @@ export default function CatalogManager({
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (
-      resource === "categories"
-      && requiresSolarPanelSlug
-      && !isValidSolarPanelSlug(draft.slug)
-    ) {
-      setError("Slug danh mục tấm pin phải có dạng tam-pin-ten-danh-muc.");
-      setNotice("");
-      return;
-    }
-
     setSaving(true);
     setError("");
     setNotice("");
@@ -216,8 +169,7 @@ export default function CatalogManager({
       : {
           name: draft.name,
           slug: draft.slug,
-          parentId: draft.parentId || null,
-          filterKey: draft.filterKey,
+          categoryGroup: draft.categoryGroup,
           description: draft.description,
           sortOrder: Number(draft.sortOrder),
           isActive: draft.isActive,
@@ -271,8 +223,6 @@ export default function CatalogManager({
     }
   }
 
-  const excludedParents = editingId ? getDescendantIds(parents, editingId) : new Set<string>();
-
   return (
     <div className="admin-manager-grid admin-manager-grid-content">
       <section className="admin-card admin-editor-card">
@@ -312,56 +262,40 @@ export default function CatalogManager({
           </label>
 
           {resource === "categories" && (
-            <label>
-              Danh mục cha
-              <select
-                required={!editingId}
-                value={draft.parentId}
-                onChange={(event) => setDraft({ ...draft, parentId: event.target.value })}
-              >
-                <option value="" disabled={!editingId}>Không có</option>
-                {parents
-                  .filter((parent) => !excludedParents.has(parent.id))
-                  .map((parent) => (
-                    <option key={parent.id} value={parent.id}>
-                      {parent.parentId ? "↳ " : ""}{parent.name}
-                    </option>
-                  ))}
-              </select>
-            </label>
-          )}
-
-          {resource === "categories" && (
             <>
+              <label>
+                {"Nh\u00f3m s\u1ea3n ph\u1ea9m"}
+                <select
+                  required
+                  value={draft.categoryGroup}
+                  onChange={(event) => setDraft({ ...draft, categoryGroup: event.target.value as CategoryGroup })}
+                >
+                  <option value="solar_panel">Tấm pin</option>
+                  <option value="inverter">Inverter</option>
+                  <option value="storage_battery">Pin lưu trữ</option>
+                  <option value="commercial_industrial">Hệ thống C&amp;I</option>
+                  <option value="accessory">Phụ kiện</option>
+                  <option value="other">Khác</option>
+                </select>
+              </label>
               <div className="admin-form-grid">
                 <label>
                   Đường dẫn (slug)
                   <input
                     required
                     maxLength={180}
-                    placeholder={requiresSolarPanelSlug ? "tam-pin-ten-danh-muc" : "ten-danh-muc"}
+                    placeholder="ten-danh-muc"
                     value={draft.slug}
                     onChange={(event) => {
                       setSlugManuallyEdited(true);
                       setDraft({ ...draft, slug: event.target.value });
                     }}
                   />
-                  {requiresSolarPanelSlug && (
-                    <span className="admin-help-text">
-                      Slug danh mục tấm pin phải bắt đầu bằng <code>tam-pin-</code>.
-                    </span>
-                  )}
-                  {!requiresSolarPanelSlug && (
-                    <span className="admin-help-text">
-                      Khi thêm danh mục con cho tấm pin, hãy chọn danh mục cha tấm pin để kiểm tra slug.
-                    </span>
-                  )}
+                  <span className="admin-help-text">
+                    {"Ch\u1ecdn nh\u00f3m ph\u00f9 h\u1ee3p \u0111\u1ec3 hi\u1ec3n th\u1ecb s\u1ea3n ph\u1ea9m trong trang catalog t\u01b0\u01a1ng \u1ee9ng."}
+                  </span>
                 </label>
               </div>
-              <label>
-                Khóa lọc catalog
-                <input maxLength={160} value={draft.filterKey} onChange={(event) => setDraft({ ...draft, filterKey: event.target.value })} />
-              </label>
               <label>
                 Mô tả
                 <textarea rows={4} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} />
@@ -431,12 +365,12 @@ export default function CatalogManager({
               <article className="admin-record" key={category.id}>
                 <div className="admin-record-main">
                   <div className="admin-record-title-row">
-                    <h3>{category.parentName ? `${category.parentName} / ` : ""}{category.name}</h3>
+                    <h3>{category.name}</h3>
                     <span className={category.isActive ? "admin-status active" : "admin-status"}>
                       {category.isActive ? "Đang hoạt động" : "Đã ẩn"}
                     </span>
                   </div>
-                  <p>{category.productCount} sản phẩm · {category.childCount} danh mục con{category.filterKey ? ` · ${category.filterKey}` : ""}</p>
+                  <p>{category.productCount} {"s\u1ea3n ph\u1ea9m"} | {categoryGroupLabels[category.categoryGroup]}</p>
                   <span className="admin-record-slug">/{category.slug}</span>
                 </div>
                 <div className="admin-record-actions">

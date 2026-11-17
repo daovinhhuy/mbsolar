@@ -5,8 +5,7 @@ type ApiSolution = {
   id: string;
   title: string;
   introduction: string;
-  content: string;
-  images: string[];
+  sections: Solution["sections"];
 };
 
 export async function getSolutions(): Promise<Solution[]> {
@@ -38,16 +37,7 @@ export async function getSolutions(): Promise<Solution[]> {
 
     const data = (await response.json()) as { solutions: ApiSolution[] };
 
-    return data.solutions.map((solution) => ({
-      id: solution.id,
-      title: solution.title,
-      introduction: solution.introduction,
-      content: solution.content
-        .split(/\r?\n\s*\r?\n/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean),
-      images: solution.images,
-    }));
+    return data.solutions;
   } catch (error) {
     console.error("Failed to fetch solutions from API:", error);
     return [];

@@ -12,7 +12,6 @@ type ApiProduct = {
   brand_name: string;
   category_slug: string;
   category_name: string;
-  category_filter_key: string | null;
   badge: string | null;
 };
 
@@ -55,7 +54,7 @@ export async function getAccessoryCatalog(): Promise<AccessoryCatalog> {
     const data = (await response.json()) as { products: ApiProduct[] };
     const categories = new Map<string, string>();
     const products = data.products.map((product) => {
-      const filterKey = product.category_filter_key ?? product.category_slug;
+      const filterKey = product.category_slug;
       categories.set(filterKey, product.category_name);
 
       return {

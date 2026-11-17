@@ -12,6 +12,7 @@ import { getFinishedConstructionProjects } from "@/services/finishedConstruction
 import SolutionsSection from "./solutions/SolutionsSection";
 import { getSolutions } from "@/services/solutionsCatalog";
 import type { PartnerRow } from "@/types/partner";
+import ContactForm from "@/component/ContactForm";
 
 export const metadata: Metadata = {
   title: "Năng lượng sạch cho tương lai | MB Solar",
@@ -36,6 +37,7 @@ export default async function Home() {
             <HeroSlider />
           </div>
         </section>
+        
         <section className="trust">
           <div className="container trust-inner">
             <h4 className="trust-description">
@@ -56,13 +58,13 @@ export default async function Home() {
             </div>
           </div>
         </section>
+        <FinishedConstructionSection projects={constructionProjects} />
+        <SolutionsSection solutions={solutions} />
         <section className="about-section" id="about">
           <div className="container about-grid about-grid-centered">
             <AboutImageSlider />
           </div>
         </section>
-        <FinishedConstructionSection projects={constructionProjects} />
-        <SolutionsSection solutions={solutions} />
         <section className="products-section" id="products">
           <div className="container">
             <div className="eyebrow">Sản phẩm mới</div>
@@ -88,21 +90,7 @@ export default async function Home() {
             </div>
           </section>
         )}
-        <section className="cta-section">
-          <div className="container cta">
-            <div>
-              <div className="eyebrow">Bạn đã sẵn sàng?</div>
-              <h2>
-                Bắt đầu hành trình
-                <br />
-                <em>năng lượng xanh</em> hôm nay.
-              </h2>
-            </div>
-            <a className="primary-button light" href="#contact">
-              Nhận tư vấn miễn phí <span>↗</span>
-            </a>
-          </div>
-        </section>
+        <ContactForm />
       </main>
       <Footer />
     </>

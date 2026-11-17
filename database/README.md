@@ -5,7 +5,7 @@
 - `data/products.ts`, `data/inverterSolaX.ts`, `data/solarStorage.ts` và `data/solarAccessories.ts` chứa dữ liệu sản phẩm/catalog.
 - `partners` chứa thông tin hiển thị và nội dung giới thiệu của các đối tác. Danh sách sản phẩm trên trang đối tác được lọc theo thương hiệu trong `brands`.
 - `app/finished-construction/projects.ts` chỉ khai báo kiểu dữ liệu; danh sách công trình được đọc từ `construction_projects` và ảnh từ `construction_project_images`.
-- `solutions` lưu tiêu đề, giới thiệu, nội dung, thứ tự và trạng thái hiển thị của từng giải pháp; `solution_images` liên kết ảnh từ bảng dùng chung `images`.
+- `solutions` lưu tiêu đề, giới thiệu, sáu cặp `image_n`/`content_n`, thứ tự và trạng thái hiển thị của từng giải pháp. API chi tiết đọc trực tiếp các cặp này; `solution_images` vẫn giữ liên kết ảnh cũ để tương thích dữ liệu.
 - API `GET /api/solutions` trả về các giải pháp đã xuất bản. Trang chủ và trang chi tiết tải dữ liệu qua `services/solutionsCatalog.ts`.
 - Website hiện chưa hiển thị giá cụ thể và chưa có tồn kho, tài khoản, giỏ hàng, đơn hàng hay form tư vấn.
 
@@ -14,10 +14,9 @@
 - `brands`: tên thương hiệu và trạng thái hoạt động, được liên kết với sản phẩm.
 - `partners`: dữ liệu trang đối tác gồm tên, logo, ảnh hồ sơ, website và nội dung giới thiệu; `id` giữ nguyên các URL đối tác hiện tại.
 - `partner_profiles`: hồ sơ nội dung gắn với `brands` theo schema hiện tại.
-- `categories`: danh mục cha/con và `filter_key` để lọc catalog.
+- `categories`: product catalog categories and parent-child hierarchy.
 - `products`: sản phẩm thuộc một thương hiệu và một danh mục, có `slug`, tên, mã model tùy chọn, mô tả Markdown và nhãn tự do (`badge`, ví dụ “Hiệu suất cao”, “N-type”). `is_new` đánh dấu sản phẩm mới; `is_best_seller` đánh dấu sản phẩm bán chạy.
 - `products.description`: nội dung mô tả Markdown để hiển thị nguyên văn theo đoạn/danh sách và giữ định dạng như chữ đậm.
-- `categories.filter_key`: khóa lọc catalog của danh mục con; không lặp lại khóa này trên mỗi sản phẩm.
 - `construction_projects`: tiêu đề, giới thiệu, nội dung dài dạng text và đường dẫn ảnh. Giao diện có thể tự chèn ảnh vào nội dung tại vị trí theo số ký tự mà không cần bảng nội dung con.
 - `quote_requests`: bảng dự phòng cho yêu cầu tư vấn khi website có form.
 
@@ -72,3 +71,7 @@ DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/mb_solar"
 ```
 
 Schema này dành cho database mới; `CREATE TABLE IF NOT EXISTS` không tự cập nhật cấu trúc của database đã khởi tạo từ schema phiên bản cũ. Danh sách đối tác được nạp bằng `database/seed_partners.sql` và API `/api/partners` đọc trực tiếp từ bảng `partners`.
+
+## Category groups
+
+Run `psql -U postgres -d mb_solar -v ON_ERROR_STOP=1 -f database/migration_category_groups.sql` on an existing database. This adds `categories.category_group` and assigns groups to existing catalog categories. The admin category form lets you choose the group for new categories.

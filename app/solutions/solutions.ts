@@ -1,7 +1,6 @@
 export type Solution = {
   id: string;
   title: string;
-  images: string[];
   introduction: string;
-  content: string[];
+  sections: { image: string | null; content: string | null }[];
 };
