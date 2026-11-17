@@ -69,9 +69,11 @@ try {
     if (@($taskBefore.missing_expected_tables).Count -ne 0) { throw 'Application tables are missing. Complete the initial database setup first.' }
     Write-Host ('Connected database: {0}' -f $taskBefore.database_name)
     Write-Host ('Existing partner rows: {0}' -f $taskBefore.partners_total)
-    Write-Host 'Importing the six catalog seeds in one transaction (matching product fields are updated)...'
+    Write-Host 'Importing partner and catalog seeds in one transaction (matching rows are updated)...'
     $taskAfter = Invoke-CatalogSetup -Method 'POST' -Url ($taskEndpoint + '?seed=catalog')
     if ($taskAfter.mode -ne 'seed-catalog-only') { throw 'Unexpected import mode. Check the deployed version before running again.' }
+    if ($taskAfter.catalog_records_verified.partners -ne 12) { throw 'Partner seed verification did not return the expected 12 rows.' }
+    Write-Host ('Verified partners: {0}' -f $taskAfter.catalog_records_verified.partners)
     Write-Host ('Verified products: {0}' -f $taskAfter.catalog_records_verified.products)
     Write-Host ('Verified product image links: {0}' -f $taskAfter.catalog_records_verified.image_links)
     Write-Host ('Verified solutions: {0}' -f $taskAfter.catalog_records_verified.solutions)
