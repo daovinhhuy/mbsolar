@@ -2517,6 +2517,12 @@ body {
     color: #8edcff;
   }
 }
+
+html,
+body {
+  overflow-x: clip;
+}
+
 @media (max-width: 1300px) {
   .main-nav .dropdown-menu {
     background: #fff;
@@ -3142,7 +3148,7 @@ body {
     font-size: 10px;
   }
 }
-@media (min-width: 701px) and (max-width: 1300px) {
+@media (min-width: 701px) and (max-width: 1279px) {
   .site-header .nav-wrap {
     width: calc(100% - 4rem);
     position: relative;
@@ -3219,7 +3225,7 @@ body {
     transform-origin: center right;
   }
 }
-@media (max-width: 1300px) {
+@media (max-width: 1279px) {
   .nav-wrap .menu-toggle {
     margin-left: auto;
   }
@@ -3592,5 +3598,84 @@ body {
   .site-header .logo img {
     width: clamp(106px, 11.2vw, 152px);
     height: 62px;
+  }
+}
+
+
+/* Keep the complete navigation visible on tablets, laptops, and desktops. */
+@media (min-width: 1280px) {
+  .site-header .nav-wrap {
+    width: calc(100% - clamp(32px, 6vw, 96px));
+    max-width: 1480px;
+    height: auto;
+    min-height: 78px;
+    gap: clamp(8px, 1.2vw, 20px);
+  }
+
+  .site-header .logo {
+    flex: 0 0 auto;
+  }
+
+  .site-header .logo img {
+    width: clamp(88px, 7.2vw, 132px);
+    height: 62px;
+  }
+
+  .site-header .menu-toggle {
+    display: none !important;
+  }
+
+  .site-header .main-nav {
+    position: static;
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: row;
+    min-width: 0;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 clamp(10px, 1vw, 18px);
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .site-header .main-nav .nav-link {
+    width: auto;
+    padding: 16px 0;
+    color: #fff;
+    font-size: clamp(12px, 0.82vw, 15px);
+    white-space: nowrap;
+  }
+
+  .site-header .main-nav .nav-link:hover,
+  .site-header .main-nav .nav-link.active {
+    color: #8edcff;
+  }
+
+  .site-header .main-nav .nav-link.nav-login-link {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 10px clamp(9px, 0.9vw, 16px);
+    border-color: rgb(255 255 255 / 55%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+    font-size: clamp(11px, 0.78vw, 13px);
+    white-space: nowrap;
+  }
+
+  .site-header .main-nav .nav-link.nav-login-link:hover,
+  .site-header .main-nav .nav-link.nav-login-link.active {
+    border-color: #8edcff;
+    background: rgb(142 220 255 / 18%);
+    color: #fff;
+  }
+
+  .site-header .main-nav .dropdown-menu {
+    position: absolute;
+    display: block;
+    width: 245px;
+    padding: 12px 0;
   }
 }

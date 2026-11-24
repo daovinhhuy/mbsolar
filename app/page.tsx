@@ -15,7 +15,7 @@ import type { PartnerRow } from "@/types/partner";
 import ContactForm from "@/component/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Năng lượng sạch cho tương lai | MB Solar",
+  title: "Energy for the future - MB Solar",
 };
 
 export default async function Home() {
