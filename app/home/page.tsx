@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Năng lượng sạch cho tương lai | MB Solar",
+  title: "Energy for the future - MB Solar",
 };
 
 export { default } from "../page";
