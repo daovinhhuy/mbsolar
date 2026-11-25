@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     telephone: false,
     email: false,
   },
-  title: "MB Solar | Năng lượng sạch cho tương lai",
+  title: "Energy for the future - MB Solar",
   description: "Giải pháp năng lượng mặt trời toàn diện từ MB Solar.",
 };
 
